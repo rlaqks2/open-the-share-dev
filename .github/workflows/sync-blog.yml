@@ -18,6 +18,8 @@ concurrency:
 
 jobs:
   sync-and-deploy:
+    # 운영 저장소에서만 실행 (테스트 저장소 open-the-share-dev 에서는 자동 커밋·배포하지 않음)
+    if: github.repository == 'rlaqks2/open-the-share-website'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

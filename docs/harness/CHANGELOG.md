@@ -2,6 +2,15 @@
 
 콘텐츠(포트폴리오 추가 등) 변경은 기록하지 않습니다. 구조·규칙·배포·외부연동이 바뀔 때만 기록합니다.
 
+## 2026-11-16 — 테스트 사이트(open-the-share-dev) 배포 경로 추가
+
+- 운영 반영 전 확인용: `rlaqks2/open-the-share-dev` 저장소 → https://rlaqks2.github.io/open-the-share-dev/
+- `vite.config.ts`: `VITE_BASE_PATH` 로 base 지정, `VITE_DEPLOY_ENV=dev` 이면 `noindex` 메타 + 제목 `[DEV]`
+- `deploy.yml`: 저장소 이름으로 운영/테스트 분기 (테스트는 하위 경로·CNAME 제거·측정 변수 미주입), `main` push 도 트리거
+- `sync-blog.yml`: 운영 저장소에서만 실행
+- `npm run ship:dev`: 빌드 검사 후 현재 HEAD 를 dev 저장소 `main` 으로 강제 push
+- 문서: DEPLOYMENT §1-1
+
 ## 2026-11-10 (2) — 문의 퍼널·채널 측정 1단계
 
 - 이벤트 추가: `form_start`(문의 폼 첫 입력), `contact_click`(푸터 전화·휴대전화·이메일 — 이번에 `tel:`/`mailto:` 링크로 변경)

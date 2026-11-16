@@ -19,6 +19,29 @@ flowchart LR
 
 > 2026-11-09 이전에는 `npm run deploy`(로컬 빌드 → gh-pages 직접 업로드)와 Actions 배포가 **이중으로** 일어났습니다. 현재 로컬 업로드는 비상용 `npm run deploy:manual` 로만 남겨두었습니다.
 
+## 1-1. 테스트 사이트 (운영 반영 전 확인용)
+
+운영(openthe.kr)에 올리기 전에 **별도 저장소 `rlaqks2/open-the-share-dev`** 에 먼저 올려 확인합니다.
+
+- 주소: **https://rlaqks2.github.io/open-the-share-dev/**
+- 같은 `deploy.yml` 이 저장소 이름으로 구분해 동작: 하위 경로 base(`VITE_BASE_PATH=/open-the-share-dev/`), CNAME 제거, **측정(GA4·Supabase·구글 시트) 끔**, `noindex` + 탭 제목 `[DEV]`
+- `sync-blog.yml` 은 운영 저장소에서만 실행 (테스트 저장소는 자동 커밋·배포 안 함)
+- 테스트 저장소의 `main` 은 **운영 저장소 코드의 거울**입니다. 올릴 때마다 강제 push 로 덮어쓰므로 그쪽에서 직접 수정하지 않습니다.
+
+```bash
+# 1) 변경을 커밋 (아직 운영 master 에 push 하지 않음)
+git add <파일> && git commit -m "..."
+# 2) 테스트 사이트로 올리기 (build 검사 → 현재 HEAD 를 dev 저장소 main 으로 강제 push)
+npm run ship:dev
+# 3) 1~3분 뒤 https://rlaqks2.github.io/open-the-share-dev/ 확인 (dev 저장소 Actions 탭 초록불)
+# 4) 이상 없으면 운영 반영
+git push origin master
+```
+
+- 큰 작업은 `feature/...` 브랜치에서 커밋하고 `npm run ship:dev` 로 확인 → `master` 에 머지 후 push 해도 됩니다 (`ship:dev` 는 지금 체크아웃된 HEAD 를 올림).
+- 커밋하지 않은 변경은 올라가지 않습니다.
+- 첫 세팅(1회): dev 저장소 Settings → Pages → Source = `gh-pages` / (root), Actions 권한 Read and write.
+
 ## 2. 배포 방법
 
 | 방법 | 하는 일 |

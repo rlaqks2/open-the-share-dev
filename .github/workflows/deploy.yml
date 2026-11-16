@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - main   # 테스트 저장소(open-the-share-dev)의 기본 브랜치
   pull_request:
     branches:
       - master
@@ -23,6 +24,10 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      # 같은 워크플로를 운영 저장소와 테스트 저장소(open-the-share-dev)가 함께 쓴다.
+      # 테스트 저장소에서는 하위 경로 base + 측정 끔 + 커스텀 도메인 없음.
+      IS_DEV_SITE: ${{ github.repository == 'rlaqks2/open-the-share-dev' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,13 +41,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
+      - name: Build project (운영)
+        if: env.IS_DEV_SITE != 'true'
         run: npm run build
         env:
           # GitHub 저장소 Settings > Secrets and variables > Actions > Variables 에 등록 (선택)
           VITE_GOOGLE_SHEET_WEBHOOK_URL: ${{ vars.VITE_GOOGLE_SHEET_WEBHOOK_URL }}
           VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
           VITE_ANALYTICS_COLLECT_URL: ${{ vars.VITE_ANALYTICS_COLLECT_URL }}
+
+      # 테스트 사이트: 측정 변수(GA4·Supabase·구글 시트)를 넘기지 않아 운영 통계에 섞이지 않는다.
+      - name: Build project (테스트 사이트)
+        if: env.IS_DEV_SITE == 'true'
+        run: |
+          npm run build
+          # public/CNAME(openthe.kr) 이 dist 로 복사되므로 제거 — 남아 있으면 운영 도메인과 충돌
+          rm -f dist/CNAME
+        env:
+          VITE_BASE_PATH: /open-the-share-dev/
+          VITE_DEPLOY_ENV: dev
 
       # PR 에서는 빌드 검사만 하고 배포하지 않습니다.
       - name: Deploy to gh-pages branch
@@ -51,4 +68,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: openthe.kr
+          # 테스트 사이트는 CNAME 없이 rlaqks2.github.io/open-the-share-dev/ 로 서비스
+          cname: ${{ env.IS_DEV_SITE != 'true' && 'openthe.kr' || '' }}

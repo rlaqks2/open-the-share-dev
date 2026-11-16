@@ -6,6 +6,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "preview", "--", "--port", "4173", "--strictPort"],
       "port": 4173
+    },
+    {
+      "name": "preview-devsite",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--", "--port", "4174", "--strictPort"],
+      "env": { "VITE_BASE_PATH": "/open-the-share-dev/" },
+      "port": 4174
     }
   ]
 }

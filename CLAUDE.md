@@ -22,7 +22,7 @@
 | R1 | **비밀값을 코드·`VITE_*` 환경변수에 넣지 않는다.** 빌드 결과물은 전부 공개된다. (EmailJS Public Key 처럼 "공개용" 키만 허용) |
 | R2 | `src/data/mockData.ts` 의 마커 `  portfolioItems: [` 와 `  ] as PortfolioItem[],` 를 **수정·이동·들여쓰기 변경 금지** — 블로그 자동 동기화(`scripts/sync_blog.py`)가 이 문자열로 위치를 찾는다. |
 | R3 | `index.html` 의 `<meta name="referrer" content="no-referrer">` **삭제 금지** — 네이버 블로그 이미지(pstatic.net) 핫링크 차단 회피용. |
-| R4 | 배포는 **`master` push → GitHub Actions** 한 경로만 쓴다. `gh-pages` 브랜치를 손으로 수정하지 않는다. |
+| R4 | 배포는 **`master` push → GitHub Actions** 한 경로만 쓴다. `gh-pages` 브랜치를 손으로 수정하지 않는다. 운영 반영 전 확인은 `npm run ship:dev` → https://rlaqks2.github.io/open-the-share-dev/ ([DEPLOYMENT §1-1](docs/harness/DEPLOYMENT.md)) |
 | R5 | `npm run build` (= `tsc && vite build`) 가 통과하지 않는 변경은 커밋하지 않는다. `noUnusedLocals` 가 켜져 있어 **안 쓰는 import 하나로도 배포가 실패**한다. |
 | R6 | 새 이미지는 `public/images/...` 에 넣고 **가로 1200px 이하 / 300KB 이하**로 최적화한다. |
 | R7 | 사용자에게 보이는 문구는 **한국어**, `break-keep` 유지. 회사 정보(전화·메일·주소)는 하드코딩하지 말고 `mockData.companyInfo` 를 참조한다. |
