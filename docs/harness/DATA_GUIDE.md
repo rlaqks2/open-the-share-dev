@@ -44,13 +44,13 @@
       category: "스페이스 업사이클링",            // 아래 5개 중 하나 (필터 칩과 일치해야 필터됨)
       orgType: "기업봉사",                        // "기업봉사" | "단체봉사"
       partner: "○○기업",                         // 화면에 표시될 참여기관명
-      period: "2026.11.03",                      // ★ 반드시 YYYY.MM.DD (문자열 정렬·필터에 사용)
+      period: "2026.11.03",                      // ★ 반드시 YYYY.MM.DD — 블로그 게시일 (화면 표기 '게시일')
       year: "2026",                              // period 의 연도와 동일
       participants: 72,                          // 숫자. 모르면 30
       imageUrl: `${BASE_URL}images/portfolio/item_111.jpg`,   // 로컬 썸네일 (핫링크 금지)
       galleryUrls: [`${BASE_URL}images/portfolio/item_111.jpg`, "https://postfiles.pstatic.net/...?type=w800"],
       tags: ["기업봉사", "스페이스 업사이클링", "친환경·업사이클링"],   // # 없이 작성 (화면에서 # 붙임)
-      story: "2~4문장 요약. 줄바꿈은 \\n",
+      story: "1~2문장(50~80자) 요약. 누가·무엇을·누구에게. 상세는 블로그 원문으로",
       blogLink: "https://blog.naver.com/5penthe/224466044899"
     },
 ```
@@ -63,10 +63,15 @@
 **정렬**: 파일 끝에서 `period` 내림차순으로 자동 정렬되므로 배열 내 위치는 상관없습니다.
 
 ### 블로그 자동 수집 (`scripts/sync_blog.py`)
-- GitHub Actions 가 **매시간** RSS(최근 글 약 50개)를 확인 → 새 `logNo` 이면서 키워드(온앤온/온팅/사회공헌/기업봉사…)에 걸리는 글만 추가
+- GitHub Actions 가 **매시간** RSS(최근 글 약 50개)를 확인 → 새 `logNo` 이면서 블로그 카테고리가 **`현장스케치`(기업 및 단체봉사 > 현장스케치)** 인 글만 추가 (칼럼·나눔전달후기·파트너 기업 소개 등은 제외)
+- `story` 는 og:description 을 90자 이내로 자동 요약 → 문장이 어색하면 운영자가 1~2문장으로 다듬기
 - 자동 추론값(`orgType`, `category`, `partner`, `participants: 30`)은 **정확하지 않을 수 있음** → 운영자가 주기적으로 검수·수정 권장
 - 이미 있는 `logNo` 는 다시 추가하지 않으므로, 수동으로 고친 내용은 덮어써지지 않습니다.
-- 자동 수집을 막고 싶은 글: 해당 `logNo` 로 항목을 하나 만들어 두거나 `is_open_the_share_portfolio()` 의 제외 목록에 추가
+- 자동 수집을 막고 싶은 글: 해당 `logNo` 로 항목을 하나 만들어 두거나, 블로그에서 카테고리를 현장스케치가 아닌 곳으로 옮기기
+
+### 언론보도 자동 수집
+- 블로그 `보도자료` 글에서 언론사 원문 링크를 찾아 `pressReleases` 맨 앞에 추가. `id` 는 기존 최대값 + 1 (React key 라 **중복 금지**)
+- 링크의 `&#x3D;` 등 HTML 이스케이프는 풀어서 저장(안 풀면 언론사에서 404). 날짜는 기사 보도일(`article:published_time`) 우선
 
 ## 4. 참여기관 (`PartnerItem`)
 

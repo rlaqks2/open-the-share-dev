@@ -1,12 +1,8 @@
 """
 @file sync_blog.py
 @description 네이버 공식 블로그(https://blog.naver.com/5penthe)에서 새로운 글을 탐지하여
-<<<<<<< Updated upstream
-1) 오픈더쉐어 포트폴리오(나눔 스토리) 자동 수집 및 이미지 다운로드
-2) 언론보도(보도자료) 포스트 탐지 및 실제 언론사 원문 기사 URL 추출 후 src/data/mockData.ts에 자동 반영하는 스크립트입니다.
-=======
-오픈더쉐어 관련 포트폴리오(기업/단체 사회공헌, 온앤온, 온팅, 과학교실, 업사이클링 등)만
-선별 수집하고, 썸네일 이미지를 다운로드한 뒤 src/data/mockData.ts에 시간순 정렬하여 자동 반영하는 스크립트입니다.
+1) 포트폴리오: 블로그 '현장스케치' 카테고리 글만 수집 → 썸네일 다운로드 → src/data/mockData.ts 에 시간순 정렬 반영
+2) 언론보도: '보도자료' 글에서 실제 언론사 원문 기사 URL 을 추출해 pressReleases 에 반영
 
 ⚠️ 이 스크립트는 mockData.ts 의 아래 두 "마커" 문자열에 의존합니다. 절대 이름/들여쓰기를 바꾸지 마세요.
    - "  portfolioItems: ["
@@ -14,7 +10,6 @@
    (docs/harness/DATA_GUIDE.md 참고)
 
 로컬 실행:  python scripts/sync_blog.py   (pillow 설치 시 썸네일 자동 리사이즈: pip install pillow)
->>>>>>> Stashed changes
 """
 
 import os
@@ -161,7 +156,8 @@ def fetch_press_article_details(log_no: int):
     for h in hrefs:
         if any(ign in h for ign in ["naver.com", "pstatic.net", "w3.org", "schema.org", "daum.net/favicon", "openthefuture.kr", "openthe.kr"]):
             continue
-        press_link = h.replace("%29", "").strip()
+        # 블로그 HTML 속 링크는 '=' 가 '&#x3D;' 처럼 이스케이프돼 있어 그대로 쓰면 언론사에서 404 가 남
+        press_link = html.unescape(h).replace("%29", "").strip()
         break
 
     if not press_link:
@@ -170,7 +166,7 @@ def fetch_press_article_details(log_no: int):
         for u in plain_urls:
             if any(ign in u for ign in ["naver.com", "pstatic.net", "w3.org", "schema.org", "openthe"]):
                 continue
-            press_link = u.strip()
+            press_link = html.unescape(u).strip()
             break
 
     if not press_link:
@@ -215,28 +211,56 @@ def fetch_press_article_details(log_no: int):
             summary = clean_p
             break
 
+    # 언론사 기사 페이지에서 실제 보도일·요약문 보강 (실패해도 진행)
+    article_date = ""
+    try:
+        a_req = urllib.request.Request(press_link, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(a_req, timeout=12) as a_resp:
+            a_html = a_resp.read().decode("utf-8", errors="replace")
+        m_date = re.search(r'article:published_time["\']\s+content=["\'](\d{4})-(\d{2})-(\d{2})', a_html)
+        if m_date:
+            article_date = f"{m_date.group(1)}.{m_date.group(2)}.{m_date.group(3)}"
+        m_desc = re.search(r'property=["\']og:description["\']\s+content=["\']([^"\']+)["\']', a_html)
+        if m_desc:
+            # "| 내외경제TV=홍길동 기자 |" 같은 머리말 제거
+            a_desc = re.sub(r"^\s*\|?[^|]*기자\s*\|\s*", "", clean_text(m_desc.group(1))).strip()
+            if len(a_desc) > 30:
+                summary = a_desc[:140].rstrip() + ("…" if len(a_desc) > 140 else "")
+    except Exception as e:
+        print(f"  (기사 페이지 메타 조회 실패: {e})")
+
     return {
         "press_link": press_link,
         "source": source,
-        "summary": summary
+        "summary": summary,
+        "date": article_date,
     }
 
+# 포트폴리오로 가져오는 블로그 카테고리 (기업 및 단체봉사 > 현장스케치)
+PORTFOLIO_CATEGORY = "현장스케치"
+
+
 def is_open_the_share_portfolio(title: str, category: str, desc: str) -> bool:
-    exclude_categories = ["새소식", "오픈더퓨처소식", "공지사항", "자원봉사모집", "보도자료"]
-    if any(ex in category for ex in exclude_categories):
-        return False
+    """'현장스케치' 카테고리 글만 포트폴리오로 인정합니다. (칼럼·나눔전달후기·파트너 기업 소개 등 제외)"""
+    return category.strip() == PORTFOLIO_CATEGORY
 
-    exclude_titles = ["신청 안내", "모집 안내", "후원 안내", "정기총회", "이사회", "선정 결과", "지원사업"]
-    if any(ex in title for ex in exclude_titles):
-        return False
 
-    combined = f"{title} {category} {desc}"
-    core_keywords = [
-        "온앤온", "온팅", "사회공헌", "기업봉사", "단체봉사", "임직원 봉사", "원데이메이킹",
-        "찾아가는 과학교실", "과학교실", "스페이스 업사이클링", "EM 흙공", "플로깅",
-        "키트 만들기", "나눔키트", "큐브연필꽂이", "공룡다이어리", "자개손거울", "하리보필통"
-    ]
-    return any(k in combined for k in core_keywords)
+def summarize_story(desc: str, title: str) -> str:
+    """
+    프로젝트 스토리는 1~2문장 요약만 둡니다. (상세 내용은 블로그 원문 링크로)
+    og:description 은 본문 앞부분이 잘린 문장이라, 이모지·말줄임을 걷어내고 최대 90자로 자릅니다.
+    자동 요약이 어색하면 mockData.ts 에서 사람이 다듬습니다.
+    """
+    text = re.sub(r"[\U0001F300-\U0001FAFF☀-➿️♡♥★☆]", "", desc or "")
+    text = re.sub(r"\s+", " ", text).strip().rstrip(".…").strip()
+    if not text:
+        return title
+    if len(text) > 90:
+        cut = text[:90]
+        # 마지막 문장 끝(다/요/.)에서 자를 수 있으면 거기서 자름
+        m = re.search(r"^(.*[다요]\.?)\s", cut)
+        text = m.group(1) if m and len(m.group(1)) >= 30 else cut.rstrip() + "…"
+    return text
 
 def determine_metadata(title: str, desc: str):
     org_type = "단체봉사"
@@ -318,8 +342,14 @@ def main():
     existing_ids = [int(x) for x in re.findall(r"\bid:\s*(\d+)", portfolio_block)]
     max_id = max(existing_ids) if existing_ids else 110
 
-    # 기존 언론보도 링크 확인 (중복 등록 방지)
-    existing_press_links = set(re.findall(r'link:\s*"([^"]+)"', mock_txt))
+    # 기존 언론보도 링크 확인 (중복 등록 방지 — 이스케이프 여부와 무관하게 비교)
+    existing_press_links = set(html.unescape(x) for x in re.findall(r'link:\s*"([^"]+)"', mock_txt))
+    # 언론보도 id 는 React key 로 쓰이므로 반드시 고유해야 함 (예전엔 전부 999 로 들어가 화면이 꼬였음)
+    pr_start = mock_txt.find("pressReleases: [")
+    pr_end = mock_txt.find("] as PressReleaseItem[]", pr_start)
+    press_block = mock_txt[pr_start:pr_end] if pr_start != -1 and pr_end != -1 else ""
+    press_ids = [int(x) for x in re.findall(r"\bid:\s*(\d+)", press_block) if int(x) != 999]
+    max_press_id = max(press_ids) if press_ids else 0
 
     print(f"Existing portfolio items in mockData: {len(existing_log_nos)} posts (Max ID: {max_id})")
 
@@ -344,12 +374,14 @@ def main():
             if press_info["press_link"] in existing_press_links:
                 continue
 
-            # 날짜 파싱
-            try:
-                dt = datetime.strptime(pub_date_str[:16], "%a, %d %b %Y")
-                press_date = dt.strftime("%Y.%m.%d")
-            except Exception:
-                press_date = datetime.now().strftime("%Y.%m.%d")
+            # 날짜: 기사 보도일 > 블로그 게시일 > 오늘
+            press_date = press_info.get("date") or ""
+            if not press_date:
+                try:
+                    dt = datetime.strptime(pub_date_str[:16], "%a, %d %b %Y")
+                    press_date = dt.strftime("%Y.%m.%d")
+                except Exception:
+                    press_date = datetime.now().strftime("%Y.%m.%d")
 
             clean_p_title = clean_text(title).replace("[보도자료]", "").strip()
             clean_p_title = re.sub(r'^\d{4}\.\d{2}\.\d{2}\.?\s*', '', clean_p_title)
@@ -363,8 +395,9 @@ def main():
 
             press_summary = press_info["summary"] if press_info["summary"] else clean_p_title
 
+            max_press_id += 1
             press_entry = f"""    {{
-      id: 999,
+      id: {max_press_id},
       title: {json.dumps(clean_p_title, ensure_ascii=False)},
       date: {json.dumps(press_date, ensure_ascii=False)},
       source: {json.dumps(press_info['source'], ensure_ascii=False)},
@@ -417,7 +450,7 @@ def main():
             continue
 
         clean_tit = clean_text(title)
-        clean_story = clean_text(details["desc"])
+        clean_story = summarize_story(clean_text(details["desc"]), clean_tit)
         org_type, cat, partner = determine_metadata(clean_tit, clean_story)
 
         gal_urls = [f"`${{BASE_URL}}images/portfolio/{local_filename}`"]

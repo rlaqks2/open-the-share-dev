@@ -182,7 +182,7 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                                     </span>
                                 </div>
                                 <div className="bg-white p-4 rounded-xl border border-slate-100 min-w-0">
-                                    <span className="block text-xs font-semibold text-slate-400 mb-1">진행 일자</span>
+                                    <span className="block text-xs font-semibold text-slate-400 mb-1">게시일</span>
                                     <span className="font-extrabold text-slate-900 text-sm sm:text-base whitespace-nowrap block">
                                         {item.period}
                                     </span>

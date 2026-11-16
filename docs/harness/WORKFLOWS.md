@@ -83,4 +83,4 @@
 | 도메인 접속 불가 / github.io 로 리다이렉트 | `public/CNAME` 존재 여부, 저장소 Settings → Pages → Custom domain |
 | 포트폴리오 갤러리 사진 깨짐 | `index.html` referrer 메타 삭제 여부, 네이버 이미지 URL 만료 |
 | 문의 메일이 안 옴 | EmailJS 대시보드 사용량 한도/템플릿, Allowed origins |
-| 블로그 새 글이 안 올라옴 | Actions "Auto Sync" 로그 → `Skipping non-portfolio post` 면 키워드 미포함 |
+| 블로그 새 글이 안 올라옴 | Actions "Auto Sync" 로그에 안 보이면 블로그 카테고리가 `현장스케치` 인지 확인 (그 외 카테고리는 수집 안 함) |

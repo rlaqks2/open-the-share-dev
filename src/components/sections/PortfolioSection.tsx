@@ -179,7 +179,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                             {/* 카드 본문 콘텐츠 */}
                             <div className="p-6 flex-1 flex flex-col justify-between">
                                 <div>
-                                    {/* 상단 메타 (테마 칩 + 진행일자) */}
+                                    {/* 상단 메타 (테마 칩 + 게시일) */}
                                     <div className="flex items-center justify-between gap-2 mb-3">
                                         <span
                                             className={`inline-block px-3 py-1 rounded-lg text-xs font-extrabold border whitespace-nowrap ${getCategoryPillStyle(

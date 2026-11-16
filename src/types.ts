@@ -22,7 +22,7 @@ export interface PortfolioItem {
   imageUrl: string;             // 대표 썸네일 이미지 URL
   galleryUrls?: string[];       // 현장 스케치 포토 갤러리 이미지 URL 목록
   partner: string;              // 협력 파트너사/단체 이름
-  period: string;               // 프로젝트 진행 일자 (YYYY.MM.DD)
+  period: string;               // 블로그 게시일 (YYYY.MM.DD) — 화면 표기 '게시일'
   year?: string;                // 진행 연도
   participants: number;         // 참여 인원 수
   tags?: string[];              // 해시태그 목록 (카카오 같이가치 / 해피빈 스타일)
