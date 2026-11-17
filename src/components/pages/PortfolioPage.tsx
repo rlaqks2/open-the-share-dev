@@ -150,7 +150,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
     return (
         <div className="min-h-screen bg-[#F8FAFC] pb-24">
             {/* 상단 캠페인 헤더 배너 */}
-            <section className="relative bg-gradient-to-br from-emerald-600 via-teal-600 to-sky-700 text-white pt-12 pb-16 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-900 text-white pt-12 pb-16 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -392,13 +392,13 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                             className={`text-xs font-extrabold px-3 py-1 rounded-full shadow-sm backdrop-blur-md whitespace-nowrap ${
                                                 item.orgType === '기업봉사'
                                                     ? 'bg-emerald-600/95 text-white'
-                                                    : 'bg-sky-600/95 text-white'
+                                                    : 'bg-amber-500/95 text-white'
                                             }`}
                                         >
                                             {item.orgType}
                                         </span>
                                         {isOTSItem(item) && (
-                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-rose-500/95 text-white shadow-sm whitespace-nowrap">
+                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-400/95 text-emerald-950 shadow-sm whitespace-nowrap">
                                                 OPEN THE SHARE
                                             </span>
                                         )}

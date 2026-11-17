@@ -5,7 +5,7 @@
  * - 미션 & 비전
  * - 핵심가치 O.P.E.N (Opportunity, Prosperity, Equality, Neighborhood)
  * - 오픈더쉐어의 3대 가치(Value) 및 기업 담당자 맞춤 솔루션
- * - 공식 CI 소개 (openthe.kr 원본 ci.png 적용)
+ * - 브랜드 스토리 (구 CI 소개, openthe.kr 원본 ci.png 적용)
  */
 import React from 'react';
 import { mockData } from '../../data/mockData';
@@ -120,7 +120,7 @@ const AboutSection: React.FC = () => {
                     </div>
                 </div>
 
-                {/* 3. 기업 담당자의 고민 해결 & 공식 CI 소개 */}
+                {/* 3. 기업 담당자의 고민 해결 & 브랜드 스토리 */}
                 <div className="grid lg:grid-cols-12 gap-8 items-stretch">
                     {/* 이런 고민을 가진 파트너와 함께합니다 */}
                     <div className="lg:col-span-7 bg-white rounded-3xl p-7 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
@@ -157,14 +157,14 @@ const AboutSection: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* 공식 CI 소개 (openthe.kr 원본 ci.png 적용) */}
+                    {/* 브랜드 스토리 (openthe.kr 원본 ci.png 적용) */}
                     <div className="lg:col-span-5 bg-white rounded-3xl p-7 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
                         <div>
                             <span className="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">
-                                CORPORATE IDENTITY
+                                BRAND STORY
                             </span>
                             <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1 mb-3 break-keep">
-                                오픈더쉐어 CI 소개
+                                오픈더쉐어 브랜드 스토리
                             </h3>
                             <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6 break-keep">
                                 {about.ciDescription}
@@ -173,7 +173,7 @@ const AboutSection: React.FC = () => {
                         <div className="bg-[#F8FAF9] rounded-2xl p-4 sm:p-6 border border-slate-100 flex items-center justify-center overflow-hidden">
                             <img
                                 src={ciImg}
-                                alt="오픈더쉐어 공식 CI (Open The Share)"
+                                alt="오픈더쉐어 브랜드 로고 (Open The Share)"
                                 className="w-full max-w-[360px] h-auto object-contain rounded-lg"
                             />
                         </div>

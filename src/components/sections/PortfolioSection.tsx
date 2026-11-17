@@ -21,7 +21,7 @@ const getOrgBadgeStyle = (item: PortfolioItem) => {
         return 'bg-emerald-600 text-white';
     }
     return item.orgType === '기업봉사'
-        ? 'bg-sky-600 text-white'
+        ? 'bg-emerald-800 text-white'
         : 'bg-amber-500 text-white';
 };
 
@@ -32,11 +32,11 @@ const getCategoryPillStyle = (category: string) => {
         case '찾아가는 과학교실':
             return 'bg-amber-50 text-amber-700 border-amber-200';
         case '지역사회 나눔':
-            return 'bg-rose-50 text-rose-700 border-rose-200';
+            return 'bg-lime-50 text-lime-700 border-lime-200';
         case '원데이메이킹':
-            return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+            return 'bg-yellow-50 text-yellow-700 border-yellow-200';
         default:
-            return 'bg-teal-50 text-teal-700 border-teal-200';
+            return 'bg-green-50 text-green-700 border-green-200';
     }
 };
 

@@ -34,9 +34,9 @@
 | # | 섹션 (컴포넌트) | 내용 | 데이터 키 |
 |---|----------------|------|-----------|
 | 1 | Hero | 슬로건, 키워드, 문의/포트폴리오 버튼, 온앤온·온팅 카드, **최근 스토리 3건**(클릭 시 상세 모달) | `hero`, `portfolioItems` |
-| 2 | About `#about` | 회사 철학, 인용문, 미션/비전, O.P.E.N 핵심가치, 페르소나 고민, CI 설명 | `about` |
+| 2 | About `#about` | 회사 철학, 인용문, 미션/비전, O.P.E.N 핵심가치, 페르소나 고민, 브랜드 스토리(구 CI 소개) | `about` |
 | 3 | Impact `#impact` | 성과 숫자 4개 (참여기관 수·프로젝트 수는 데이터에서 자동 계산) | `impactStats` |
-| 4 | Programs `#programs` | 대표 브랜드 온앤온(대면)/온팅(비대면), 4대 콘텐츠, 옵션(BASIC/A/B/C) | `flagshipBrands`, `programs`, `programOptions` |
+| 4 | Programs `#programs` | 2대 핵심 사업(① 나눔 키트 제작(핸즈온) ② 기업 행사·컨설팅 대행). ① 아래에 온앤온(대면)/온팅(비대면), 4대 콘텐츠, 옵션(BASIC/A/B/C) | `businessAreas`, `flagshipBrands`, `programs`, `programOptions` |
 | 5 | Process `#process` | 4단계 진행 절차 | `processSteps` |
 | 6 | Portfolio `#portfolio` | 탭(전체/OTS 최신/기업/단체) + 최신 6건 카드 → 상세 모달, 전체보기 | `portfolioItems` |
 | 7 | Testimonials `#testimonials` | 언론보도 카드(외부 링크) + 담당자 후기(이름 마스킹) | `pressReleases`, `testimonials` |
