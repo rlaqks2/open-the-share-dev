@@ -88,7 +88,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
             >
                 <div className="max-w-3xl mx-auto px-4">
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">
+                        <span className="text-xs font-extrabold text-brand-600 uppercase tracking-wider">
                             PORTFOLIO &amp; PARTNER SEARCH
                         </span>
                         <button
@@ -105,11 +105,11 @@ const SearchModal: React.FC<SearchModalProps> = ({
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="파트너사명(예: 삼성, DB생명, 한국무라타전자) 또는 활동 키워드(예: 목공, 벽화, 키트)를 입력하세요"
-                            className="w-full pl-5 pr-12 py-4 rounded-2xl border-2 border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium"
+                            className="w-full pl-5 pr-12 py-4 rounded-2xl border-2 border-brand-500 focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm font-medium"
                             autoFocus
                         />
                         <svg
-                            className="w-6 h-6 absolute right-4 top-1/2 -translate-y-1/2 text-emerald-600"
+                            className="w-6 h-6 absolute right-4 top-1/2 -translate-y-1/2 text-brand-600"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -130,7 +130,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                             <button
                                 key={kw}
                                 onClick={() => setQuery(kw)}
-                                className="bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
+                                className="bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-600 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
                             >
                                 #{kw}
                             </button>
@@ -150,7 +150,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                                             onClose();
                                             onOpenPortfolioPage(query.trim());
                                         }}
-                                        className="text-xs font-extrabold text-emerald-600 hover:underline"
+                                        className="text-xs font-extrabold text-brand-600 hover:underline"
                                     >
                                         포트폴리오 전용 페이지에서 전체 결과 보기 &rarr;
                                     </button>
@@ -181,7 +181,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                                             />
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-2 mb-0.5 min-w-0">
-                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 whitespace-nowrap shrink-0">
+                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-100 text-brand-800 whitespace-nowrap shrink-0">
                                                         {item.orgType}
                                                     </span>
                                                     <span className="text-xs font-bold text-slate-600 truncate">

@@ -22,7 +22,9 @@ export function useScrollObserver() {
           }
         });
       },
-      { threshold: 0.1 } // 요소가 10% 이상 보였을 때 콜백 함수를 실행
+      // 요소 윗부분이 화면 하단 10% 선을 넘으면 실행.
+      // 비율(threshold) 기준은 화면보다 훨씬 긴 섹션(예: 사업안내)에서 조건을 못 채워 영영 안 보이는 문제가 있어 사용하지 않는다.
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' }
     );
 
     // 페이지 내의 모든 <section> 요소를 선택하여 감시 대상으로 등록

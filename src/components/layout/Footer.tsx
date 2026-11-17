@@ -70,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                 alt="Open The Share 오픈더쉐어"
                                 className="h-8 w-auto object-contain brightness-0 invert opacity-90"
                             />
-                            <p className="text-xs text-emerald-400 font-bold mt-2">(주)오픈더쉐어</p>
+                            <p className="text-xs text-brand-400 font-bold mt-2">(주)오픈더쉐어</p>
                         </div>
                         <p className="text-sm text-slate-400 leading-relaxed break-keep">
                             더 나은 사회를 위한 고민, 오픈더쉐어가 함께합니다. 기업 맞춤형 대면 사회공헌(온앤온) 및 비대면 사회공헌(온팅) 전문 파트너.
@@ -84,7 +84,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <li>
                                 <button
                                     onClick={() => onNavigateHome && onNavigateHome('about')}
-                                    className="text-slate-400 hover:text-emerald-400 transition-colors text-left"
+                                    className="text-slate-400 hover:text-brand-400 transition-colors text-left"
                                 >
                                     회사소개 · 핵심가치(O.P.E.N)
                                 </button>
@@ -92,7 +92,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <li>
                                 <button
                                     onClick={() => onNavigateHome && onNavigateHome('programs')}
-                                    className="text-slate-400 hover:text-emerald-400 transition-colors text-left"
+                                    className="text-slate-400 hover:text-brand-400 transition-colors text-left"
                                 >
                                     사업소개 (온앤온 · 온팅)
                                 </button>
@@ -100,7 +100,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <li>
                                 <button
                                     onClick={() => onNavigatePortfolio && onNavigatePortfolio()}
-                                    className="hover:text-emerald-400 transition-colors font-semibold text-emerald-300 text-left"
+                                    className="hover:text-brand-400 transition-colors font-semibold text-brand-300 text-left"
                                 >
                                     포트폴리오 전용 페이지 ({portfolioItems.length}건)
                                 </button>
@@ -108,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <li>
                                 <button
                                     onClick={() => onNavigateHome && onNavigateHome('partners')}
-                                    className="text-slate-400 hover:text-emerald-400 transition-colors text-left"
+                                    className="text-slate-400 hover:text-brand-400 transition-colors text-left"
                                 >
                                     함께한 참여기관 ({partners.length}개)
                                 </button>
@@ -116,7 +116,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <li>
                                 <button
                                     onClick={() => onNavigateHome && onNavigateHome('faq')}
-                                    className="text-slate-400 hover:text-emerald-400 transition-colors text-left"
+                                    className="text-slate-400 hover:text-brand-400 transition-colors text-left"
                                 >
                                     자주 묻는 질문 (FAQ)
                                 </button>
@@ -132,7 +132,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                 <a
                                     href={telHref(companyInfo.tel)}
                                     onClick={trackContact('tel', 'footer')}
-                                    className="hover:text-emerald-400 transition-colors"
+                                    className="hover:text-brand-400 transition-colors"
                                 >
                                     {companyInfo.tel}
                                 </a>
@@ -142,7 +142,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                 <a
                                     href={telHref(companyInfo.mobile)}
                                     onClick={trackContact('mobile', 'footer')}
-                                    className="hover:text-emerald-400 transition-colors"
+                                    className="hover:text-brand-400 transition-colors"
                                 >
                                     {companyInfo.mobile}
                                 </a>
@@ -153,7 +153,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                 <a
                                     href={`mailto:${companyInfo.email}`}
                                     onClick={trackContact('email', 'footer')}
-                                    className="hover:text-emerald-400 transition-colors"
+                                    className="hover:text-brand-400 transition-colors"
                                 >
                                     {companyInfo.email}
                                 </a>
@@ -184,7 +184,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                         rel="noopener noreferrer"
                                         aria-label={`오픈더쉐어 ${label} (새 창)`}
                                         title={label}
-                                        className={`w-11 h-11 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center transition-all hover:text-white hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${hoverClass}`}
+                                        className={`w-11 h-11 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center transition-all hover:text-white hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 ${hoverClass}`}
                                     >
                                         <Icon />
                                     </a>

@@ -27,10 +27,10 @@ const PartnersSection: React.FC = () => {
     const displayedPartners = isExpanded ? filteredPartners : filteredPartners.slice(0, 24);
 
     return (
-        <section id="partners" className="py-24 bg-[#F8FAF9] border-t border-slate-100">
+        <section id="partners" className="py-24 bg-[#F6FAFD] border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-10">
-                    <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold mb-3">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-extrabold mb-3">
                         PARTICIPATING ORGANIZATIONS · {mockData.partners.length} PARTNERS
                     </span>
                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3 break-keep">
@@ -59,13 +59,13 @@ const PartnersSection: React.FC = () => {
                                 className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
                                     isActive
                                         ? 'bg-slate-900 text-white shadow-sm'
-                                        : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-400'
+                                        : 'bg-white text-slate-600 border border-slate-200 hover:border-brand-400'
                                 }`}
                             >
                                 <span>{tab.label}</span>
                                 <span
                                     className={`px-1.5 py-0.5 rounded-full text-[11px] font-extrabold ${
-                                        isActive ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'
+                                        isActive ? 'bg-brand-500 text-white' : 'bg-slate-100 text-slate-600'
                                     }`}
                                 >
                                     {count}
@@ -88,7 +88,7 @@ const PartnersSection: React.FC = () => {
                                         className="max-h-11 max-w-[136px] w-auto h-auto object-contain group-hover:scale-105 transition-transform"
                                     />
                                 </div>
-                                <span className="w-full text-center px-1 text-[11px] font-bold text-slate-600 group-hover:text-emerald-700 truncate">
+                                <span className="w-full text-center px-1 text-[11px] font-bold text-slate-600 group-hover:text-brand-700 truncate">
                                     {partner.name}
                                 </span>
                             </>
@@ -100,7 +100,7 @@ const PartnersSection: React.FC = () => {
                                 href={partner.blogLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
+                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-brand-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
                                 title={`${partner.name} 공식 블로그 소개 보기`}
                             >
                                 {cardContent}
@@ -108,7 +108,7 @@ const PartnersSection: React.FC = () => {
                         ) : (
                             <div
                                 key={partner.name}
-                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
+                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-brand-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
                                 title={partner.name}
                             >
                                 {cardContent}
@@ -122,7 +122,7 @@ const PartnersSection: React.FC = () => {
                     <div className="mt-10 text-center">
                         <button
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white border border-slate-300 text-slate-700 font-bold text-sm hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-sm whitespace-nowrap"
+                            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white border border-slate-300 text-slate-700 font-bold text-sm hover:border-brand-500 hover:text-brand-600 transition-colors shadow-sm whitespace-nowrap"
                         >
                             <span>
                                 {isExpanded

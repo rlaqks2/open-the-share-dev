@@ -34,7 +34,7 @@
    <section id="xxx" className="py-24 bg-white">
      <div className="max-w-7xl mx-auto px-4">
        <div className="text-center max-w-2xl mx-auto mb-14">
-         <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold mb-3">EYEBROW</span>
+         <span className="inline-block px-3.5 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-extrabold mb-3">EYEBROW</span>
          <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3 break-keep">제목</h2>
          <p className="text-slate-600 text-base break-keep">설명</p>
        </div>
@@ -65,7 +65,7 @@
 
 ## W7. 디자인/스타일 수정 (난이도 ★~★★)
 
-- 색상 톤: 주색 `emerald-600`, 보조 `amber`, 텍스트 `slate-900/600`, 배경 `#F8FAF9`
+- 색상 톤: 주색 `brand-600`(로고 블루 #197fc3), 보조 `navy`, 텍스트 `slate-900/600`, 배경 `#F6FAFD` — 팔레트는 `tailwind.config.js` 에 정의. `emerald`·`amber` 는 쓰지 않는다
 - 모서리: 카드 `rounded-3xl`, 버튼 `rounded-full`
 - 한글 줄바꿈: 제목·본문에 `break-keep`
 - Tailwind **v3** 문법만 사용 (`backdrop-blur-xs`, `scale-102` 같은 v4/없는 클래스 주의 → 임의값 `scale-[1.02]` 사용)

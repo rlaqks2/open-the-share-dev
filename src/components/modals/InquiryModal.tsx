@@ -18,10 +18,10 @@ interface InquiryModalProps {
 // 폼 제출 성공 시 보여줄 메시지 컴포넌트
 const SuccessMessage: React.FC<{ onClose: () => void }> = ({ onClose }) => (
     <div className="text-center p-4">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-4xl">✓</div>
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-4xl">✓</div>
         <h3 className="text-xl font-bold mb-2">신청이 접수되었습니다</h3>
         <p className="text-slate-600 mb-6">담당자가 확인 후 연락드리겠습니다. 감사합니다.</p>
-        <button onClick={onClose} className="w-full bg-emerald-600 text-white font-semibold py-2.5 rounded-lg hover:bg-emerald-700">확인</button>
+        <button onClick={onClose} className="w-full bg-brand-600 text-white font-semibold py-2.5 rounded-lg hover:bg-brand-700">확인</button>
     </div>
 );
 

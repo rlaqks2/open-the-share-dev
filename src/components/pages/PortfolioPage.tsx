@@ -150,7 +150,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
     return (
         <div className="min-h-screen bg-[#F8FAFC] pb-24">
             {/* 상단 캠페인 헤더 배너 */}
-            <section className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-900 text-white pt-12 pb-16 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white pt-12 pb-16 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -161,7 +161,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                             <span>&larr;</span>
                             <span>메인 홈으로 돌아가기</span>
                         </button>
-                        <div className="flex items-center gap-2 text-xs md:text-sm text-emerald-100 whitespace-nowrap">
+                        <div className="flex items-center gap-2 text-xs md:text-sm text-brand-100 whitespace-nowrap">
                             <span>홈</span>
                             <span>/</span>
                             <span className="font-bold text-white">포트폴리오 아카이브</span>
@@ -169,13 +169,13 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                     </div>
 
                     <div className="max-w-3xl">
-                        <span className="inline-block bg-amber-400 text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full mb-4 tracking-wide">
+                        <span className="inline-block bg-navy-400 text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full mb-4 tracking-wide">
                             OPEN THE SHARE STORY ARCHIVE
                         </span>
                         <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-4 break-keep">
                             함께 만든 따뜻한 변화, 나눔 스토리 아카이브
                         </h1>
-                        <p className="text-base md:text-lg text-emerald-50/90 leading-relaxed break-keep">
+                        <p className="text-base md:text-lg text-brand-50/90 leading-relaxed break-keep">
                             오픈더쉐어가 기업 및 학교·기관·단체와 함께 만들어온 실제 사회공헌 활동 기록입니다.
                             임직원과 참여자들의 손끝에서 탄생한 나눔의 순간들을 확인해 보세요.
                         </p>
@@ -184,28 +184,28 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                     {/* 실시간 스토리 카운트 배지 */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 mt-10">
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 min-w-0">
-                            <p className="text-xs text-emerald-100 font-medium break-keep">전체 등록 스토리</p>
+                            <p className="text-xs text-brand-100 font-medium break-keep">전체 등록 스토리</p>
                             <p className="text-2xl md:text-3xl font-black mt-1 whitespace-nowrap">
                                 {stats.total}
                                 <span className="text-base font-normal ml-1">건</span>
                             </p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 min-w-0">
-                            <p className="text-xs text-emerald-100 font-medium break-keep">OPEN THE SHARE 최신</p>
+                            <p className="text-xs text-brand-100 font-medium break-keep">OPEN THE SHARE 최신</p>
                             <p className="text-2xl md:text-3xl font-black mt-1 whitespace-nowrap">
                                 {stats.otsCount}
                                 <span className="text-base font-normal ml-1">건</span>
                             </p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 min-w-0">
-                            <p className="text-xs text-emerald-100 font-medium break-keep">기업 사회공헌 (CSR)</p>
+                            <p className="text-xs text-brand-100 font-medium break-keep">기업 사회공헌 (CSR)</p>
                             <p className="text-2xl md:text-3xl font-black mt-1 whitespace-nowrap">
                                 {stats.corpCount}
                                 <span className="text-base font-normal ml-1">건</span>
                             </p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 min-w-0">
-                            <p className="text-xs text-emerald-100 font-medium break-keep">단체·학교 봉사활동</p>
+                            <p className="text-xs text-brand-100 font-medium break-keep">단체·학교 봉사활동</p>
                             <p className="text-2xl md:text-3xl font-black mt-1 whitespace-nowrap">
                                 {stats.groupCount}
                                 <span className="text-base font-normal ml-1">건</span>
@@ -237,7 +237,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                         onClick={() => setOrgFilter(tab.id)}
                                         className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
                                             isActive
-                                                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                                ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20'
                                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                         }`}
                                     >
@@ -261,7 +261,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="참여기관(예: 삼성, 무라타), 활동명 검색"
-                                className="w-full pl-10 pr-4 py-2.5 text-sm rounded-full border border-slate-200 bg-slate-50 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
+                                className="w-full pl-10 pr-4 py-2.5 text-sm rounded-full border border-slate-200 bg-slate-50 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all"
                             />
                             <svg
                                 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"
@@ -291,7 +291,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                         onClick={() => setCategoryFilter(chip.id)}
                                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-semibold border transition-all whitespace-nowrap ${
                                             isActive
-                                                ? 'border-emerald-600 bg-emerald-50 text-emerald-700 font-bold'
+                                                ? 'border-brand-600 bg-brand-50 text-brand-700 font-bold'
                                                 : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                                         }`}
                                     >
@@ -308,7 +308,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                 value={yearFilter}
                                 onChange={(e) => setYearFilter(e.target.value)}
                                 aria-label="진행 연도 선택"
-                                className="text-xs md:text-sm font-semibold rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-8 text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
+                                className="text-xs md:text-sm font-semibold rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-8 text-slate-700 focus:border-brand-500 focus:ring-brand-500"
                             >
                                 <option value="all">전체 연도</option>
                                 {availableYears.map((y) => (
@@ -322,7 +322,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                 value={itemsPerPage}
                                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
                                 aria-label="페이지당 표시 개수"
-                                className="text-xs md:text-sm font-semibold rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-8 text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
+                                className="text-xs md:text-sm font-semibold rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-8 text-slate-700 focus:border-brand-500 focus:ring-brand-500"
                             >
                                 <option value={9}>9개씩 보기</option>
                                 <option value={12}>12개씩 보기</option>
@@ -335,7 +335,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 {/* 검색 결과 요약 바 */}
                 <div className="flex flex-wrap items-center justify-between gap-2 mt-8 mb-6 px-1">
                     <p className="text-sm md:text-base text-slate-600">
-                        총 <strong className="font-extrabold text-emerald-600">{filteredItems.length}</strong>건의 나눔 스토리가 있습니다
+                        총 <strong className="font-extrabold text-brand-600">{filteredItems.length}</strong>건의 나눔 스토리가 있습니다
                         <span className="text-xs text-slate-400 ml-2 whitespace-nowrap">
                             ({currentPage} / {totalPages} 페이지)
                         </span>
@@ -346,7 +346,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                         searchQuery !== '') && (
                         <button
                             onClick={resetFilters}
-                            className="text-xs font-semibold text-slate-500 hover:text-emerald-600 underline underline-offset-4 whitespace-nowrap"
+                            className="text-xs font-semibold text-slate-500 hover:text-brand-600 underline underline-offset-4 whitespace-nowrap"
                         >
                             필터 초기화
                         </button>
@@ -365,7 +365,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                         </p>
                         <button
                             onClick={resetFilters}
-                            className="bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-full hover:bg-emerald-700 transition-colors text-sm"
+                            className="bg-brand-600 text-white font-bold px-6 py-2.5 rounded-full hover:bg-brand-700 transition-colors text-sm"
                         >
                             전체 포트폴리오 보기
                         </button>
@@ -391,14 +391,14 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                         <span
                                             className={`text-xs font-extrabold px-3 py-1 rounded-full shadow-sm backdrop-blur-md whitespace-nowrap ${
                                                 item.orgType === '기업봉사'
-                                                    ? 'bg-emerald-600/95 text-white'
-                                                    : 'bg-amber-500/95 text-white'
+                                                    ? 'bg-brand-600/95 text-white'
+                                                    : 'bg-navy-500/95 text-white'
                                             }`}
                                         >
                                             {item.orgType}
                                         </span>
                                         {isOTSItem(item) && (
-                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-400/95 text-emerald-950 shadow-sm whitespace-nowrap">
+                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-white/95 text-brand-800 shadow-sm whitespace-nowrap">
                                                 OPEN THE SHARE
                                             </span>
                                         )}
@@ -416,7 +416,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                 <div className="p-6 flex flex-col flex-grow min-w-0">
                                     {/* 카테고리 & 태그 */}
                                     <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
-                                        <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-md whitespace-nowrap">
+                                        <span className="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-md whitespace-nowrap">
                                             {item.category}
                                         </span>
                                         {item.tags &&
@@ -431,7 +431,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                     </div>
 
                                     {/* 제목 */}
-                                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-2 mb-2.5 leading-snug break-keep">
+                                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-2.5 leading-snug break-keep">
                                         {item.title}
                                     </h3>
 
@@ -443,7 +443,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                     {/* 하단 파트너 & 날짜 푸터 */}
                                     <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2 text-xs min-w-0">
                                         <div className="flex items-center gap-2 min-w-0 flex-1">
-                                            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                                            <span className="w-2 h-2 rounded-full bg-brand-500 shrink-0" />
                                             <span className="font-bold text-slate-700 truncate" title={item.partner}>
                                                 {item.partner}
                                             </span>
@@ -489,7 +489,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                     aria-current={currentPage === page ? 'page' : undefined}
                                     className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-extrabold transition-all ${
                                         currentPage === page
-                                            ? 'bg-emerald-600 text-white shadow-sm'
+                                            ? 'bg-brand-600 text-white shadow-sm'
                                             : 'text-slate-600 hover:bg-slate-100'
                                     }`}
                                 >
@@ -518,9 +518,9 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 )}
 
                 {/* 하단 맞춤형 제안 배너 */}
-                <div className="mt-16 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-8 md:p-12 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
+                <div className="mt-16 bg-gradient-to-r from-slate-900 via-slate-800 to-brand-950 rounded-3xl p-8 md:p-12 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
                     <div className="min-w-0">
-                        <span className="text-xs font-extrabold text-emerald-400 tracking-wider uppercase">
+                        <span className="text-xs font-extrabold text-brand-400 tracking-wider uppercase">
                             CUSTOM CSR &amp; ESG PROGRAM
                         </span>
                         <h3 className="text-2xl md:text-3xl font-black mt-1 mb-2 break-keep">
@@ -533,7 +533,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                     <div className="flex flex-wrap gap-3 shrink-0">
                         <button
                             onClick={onInquiryClick}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold px-7 py-3.5 rounded-full transition-colors text-sm md:text-base whitespace-nowrap"
+                            className="bg-brand-500 hover:bg-brand-400 text-slate-950 font-extrabold px-7 py-3.5 rounded-full transition-colors text-sm md:text-base whitespace-nowrap"
                         >
                             파트너십 문의하기
                         </button>

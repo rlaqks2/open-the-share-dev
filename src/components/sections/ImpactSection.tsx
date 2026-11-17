@@ -20,16 +20,16 @@ const ImpactSection: React.FC = () => {
     });
 
     return (
-        <section id="impact" className="py-20 bg-emerald-900 text-white">
+        <section id="impact" className="py-20 bg-brand-900 text-white">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center mb-12">
-                    <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-800 text-emerald-200 text-xs font-extrabold mb-3">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-brand-800 text-brand-200 text-xs font-extrabold mb-3">
                         SOCIAL IMPACT DATA
                     </span>
                     <h2 className="text-3xl md:text-4xl font-black mb-2 break-keep">
                         숫자로 보는 오픈더쉐어의 임팩트
                     </h2>
-                    <p className="text-emerald-200 text-sm md:text-base break-keep">
+                    <p className="text-brand-200 text-sm md:text-base break-keep">
                         공식 홈페이지 및 블로그에 기록된 기업·단체 사회공헌 캠페인 및 참여기관 데이터입니다.
                     </p>
                 </div>
@@ -39,13 +39,13 @@ const ImpactSection: React.FC = () => {
                             key={stat.id}
                             className="bg-white/10 backdrop-blur-sm border border-white/15 p-7 rounded-3xl text-center hover:bg-white/15 transition-colors min-w-0"
                         >
-                            <p className="text-4xl md:text-5xl font-black text-amber-300 mb-2 whitespace-nowrap">
+                            <p className="text-4xl md:text-5xl font-black text-navy-300 mb-2 whitespace-nowrap">
                                 {stat.value}
                             </p>
                             <p className="font-extrabold text-white text-base sm:text-lg mb-1 break-keep">
                                 {stat.label}
                             </p>
-                            {stat.sub && <p className="text-xs text-emerald-200 break-keep">{stat.sub}</p>}
+                            {stat.sub && <p className="text-xs text-brand-200 break-keep">{stat.sub}</p>}
                         </div>
                     ))}
                 </div>

@@ -7,10 +7,10 @@ import { mockData } from '../../data/mockData';
 
 const ProcessSection: React.FC = () => {
     return (
-        <section id="process" className="py-24 bg-[#F8FAF9] border-t border-slate-100">
+        <section id="process" className="py-24 bg-[#F6FAFD] border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="text-center max-w-2xl mx-auto mb-14">
-                    <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold mb-3">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-extrabold mb-3">
                         4-STEP WORKFLOW
                     </span>
                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3 break-keep">
@@ -25,11 +25,11 @@ const ProcessSection: React.FC = () => {
                     {mockData.processSteps.map((step) => (
                         <div
                             key={step.id}
-                            className="relative bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:border-emerald-400 transition-colors min-w-0"
+                            className="relative bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:border-brand-400 transition-colors min-w-0"
                         >
                             <div>
                                 <div className="flex items-center justify-between gap-2 mb-5">
-                                    <span className="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-extrabold whitespace-nowrap">
+                                    <span className="px-3 py-1 rounded-full bg-brand-600 text-white text-xs font-extrabold whitespace-nowrap">
                                         {step.step}
                                     </span>
                                     <span className="text-2xl font-black text-slate-200 whitespace-nowrap">0{step.id}</span>

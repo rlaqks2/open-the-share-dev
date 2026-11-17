@@ -64,7 +64,7 @@ const TestimonialsSection: React.FC = () => {
                 <div>
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                         <div>
-                            <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-extrabold mb-3">
+                            <span className="inline-block px-3.5 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-extrabold mb-3">
                                 PRESS &amp; MEDIA
                             </span>
                             <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
@@ -83,7 +83,7 @@ const TestimonialsSection: React.FC = () => {
                                 aria-label="이전 언론보도 보기"
                                 className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all ${
                                     canScrollLeft
-                                        ? 'border-slate-300 bg-white text-slate-700 hover:bg-emerald-50 hover:border-emerald-500 hover:text-emerald-700 shadow-sm'
+                                        ? 'border-slate-300 bg-white text-slate-700 hover:bg-brand-50 hover:border-brand-500 hover:text-brand-700 shadow-sm'
                                         : 'border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed'
                                 }`}
                             >
@@ -97,7 +97,7 @@ const TestimonialsSection: React.FC = () => {
                                 aria-label="다음 언론보도 보기"
                                 className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all ${
                                     canScrollRight
-                                        ? 'border-slate-300 bg-white text-slate-700 hover:bg-emerald-50 hover:border-emerald-500 hover:text-emerald-700 shadow-sm'
+                                        ? 'border-slate-300 bg-white text-slate-700 hover:bg-brand-50 hover:border-brand-500 hover:text-brand-700 shadow-sm'
                                         : 'border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed'
                                 }`}
                             >
@@ -124,12 +124,12 @@ const TestimonialsSection: React.FC = () => {
                                 href={news.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="snap-start shrink-0 w-[300px] sm:w-[350px] md:w-[370px] bg-[#F8FAF9] rounded-3xl p-6 md:p-7 border border-slate-200/90 hover:border-emerald-500 hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                                className="snap-start shrink-0 w-[300px] sm:w-[350px] md:w-[370px] bg-[#F6FAFD] rounded-3xl p-6 md:p-7 border border-slate-200/90 hover:border-brand-500 hover:bg-white hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                             >
                                 <div>
                                     <div className="flex items-center justify-between gap-2 mb-4">
                                         <div className="flex items-center gap-2">
-                                            <span className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 text-xs font-black">
+                                            <span className="px-2.5 py-1 rounded-md bg-brand-100 text-brand-800 text-xs font-black">
                                                 {news.source}
                                             </span>
                                             <span className="px-2 py-0.5 rounded text-[11px] font-semibold text-slate-500 bg-slate-100">
@@ -139,7 +139,7 @@ const TestimonialsSection: React.FC = () => {
                                         <span className="text-xs text-slate-400 font-medium">{news.date}</span>
                                     </div>
 
-                                    <h3 className="text-base md:text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-3">
+                                    <h3 className="text-base md:text-lg font-black text-slate-900 group-hover:text-brand-700 transition-colors leading-snug line-clamp-2 mb-3">
                                         {news.title}
                                     </h3>
 
@@ -148,14 +148,14 @@ const TestimonialsSection: React.FC = () => {
                                     </p>
                                 </div>
 
-                                <div className="pt-4 mt-6 border-t border-slate-200/70 flex items-center justify-between text-xs font-bold text-emerald-600 group-hover:text-emerald-700">
+                                <div className="pt-4 mt-6 border-t border-slate-200/70 flex items-center justify-between text-xs font-bold text-brand-600 group-hover:text-brand-700">
                                     <span className="flex items-center gap-1.5">
                                         기사 원문 읽기
-                                        <svg className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-600 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                         </svg>
                                     </span>
-                                    <span className="text-slate-300 group-hover:text-emerald-600 font-black transition-colors">&rarr;</span>
+                                    <span className="text-slate-300 group-hover:text-brand-600 font-black transition-colors">&rarr;</span>
                                 </div>
                             </a>
                         ))}
@@ -165,7 +165,7 @@ const TestimonialsSection: React.FC = () => {
                 {/* 2. 파트너사 담당자 후기 */}
                 <div>
                     <div className="text-center max-w-2xl mx-auto mb-12">
-                        <span className="inline-block px-3.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-extrabold mb-3">
+                        <span className="inline-block px-3.5 py-1 rounded-full bg-navy-50 text-navy-700 text-xs font-extrabold mb-3">
                             PARTNER VOICES
                         </span>
                         <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">
@@ -183,11 +183,11 @@ const TestimonialsSection: React.FC = () => {
                                 className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between"
                             >
                                 <div>
-                                    <div className="text-emerald-500 text-2xl font-serif mb-3">“</div>
+                                    <div className="text-brand-500 text-2xl font-serif mb-3">“</div>
                                     <p className="text-slate-700 text-sm leading-relaxed mb-6">{item.quote}</p>
                                 </div>
                                 <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 font-black text-sm flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-full bg-brand-100 text-brand-700 font-black text-sm flex items-center justify-center">
                                         {item.name.charAt(0)}
                                     </div>
                                     <div>

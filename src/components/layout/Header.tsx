@@ -2,7 +2,7 @@
  * @file Header.tsx
  * @description 웹사이트 상단 네비게이션 헤더 컴포넌트입니다.
  * 메인 랜딩 화면('home')과 포트폴리오 전용 페이지('portfolio') 간 전환을 지원하며,
- * 사용자가 선택한 메뉴만 초록색(emerald) 활성 상태로 표시합니다.
+ * 사용자가 선택한 메뉴만 로고 블루(brand) 활성 상태로 표시합니다.
  */
 import React, { useState, useEffect } from 'react';
 import logoImg from '../../assets/logo.png';
@@ -98,8 +98,8 @@ const Header: React.FC<HeaderProps> = ({
                                     onClick={() => handleNavClick(link)}
                                     className={`px-3.5 py-2 rounded-full text-sm font-bold transition-colors inline-flex items-center gap-1.5 whitespace-nowrap ${
                                         isSelected
-                                            ? 'text-emerald-600 bg-emerald-50'
-                                            : 'text-slate-700 hover:text-emerald-600'
+                                            ? 'text-brand-600 bg-brand-50'
+                                            : 'text-slate-700 hover:text-brand-600'
                                     }`}
                                 >
                                     <span>{link.name}</span>
@@ -107,7 +107,7 @@ const Header: React.FC<HeaderProps> = ({
                                         <span
                                             className={`px-1.5 py-0.5 text-[10px] font-extrabold rounded-full transition-colors ${
                                                 isSelected
-                                                    ? 'bg-emerald-600 text-white'
+                                                    ? 'bg-brand-600 text-white'
                                                     : 'bg-slate-100 text-slate-600'
                                             }`}
                                         >
@@ -123,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center gap-2.5 shrink-0">
                         <button
                             onClick={onSearchClick}
-                            className="p-2.5 rounded-full text-slate-600 hover:text-emerald-600 hover:bg-slate-100 transition-colors shrink-0"
+                            className="p-2.5 rounded-full text-slate-600 hover:text-brand-600 hover:bg-slate-100 transition-colors shrink-0"
                             aria-label="포트폴리오 검색"
                             title="포트폴리오 검색"
                         >
@@ -138,7 +138,7 @@ const Header: React.FC<HeaderProps> = ({
                         </button>
                         <button
                             onClick={onInquiryClick}
-                            className="hidden sm:inline-flex items-center gap-1.5 bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-full hover:bg-emerald-700 transition-colors shadow-sm whitespace-nowrap shrink-0"
+                            className="hidden sm:inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-bold px-5 py-2.5 rounded-full hover:bg-brand-700 transition-colors shadow-sm whitespace-nowrap shrink-0"
                         >
                             <span>파트너십 문의</span>
                         </button>
@@ -174,8 +174,8 @@ const Header: React.FC<HeaderProps> = ({
                                     onClick={() => handleNavClick(link)}
                                     className={`w-full text-left px-4 py-3 rounded-xl font-bold flex items-center justify-between transition-colors ${
                                         isSelected
-                                            ? 'bg-emerald-50 text-emerald-600'
-                                            : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-600'
+                                            ? 'bg-brand-50 text-brand-600'
+                                            : 'text-slate-700 hover:bg-brand-50 hover:text-brand-600'
                                     }`}
                                 >
                                     <span>{link.name}</span>
@@ -183,7 +183,7 @@ const Header: React.FC<HeaderProps> = ({
                                         <span
                                             className={`px-2 py-0.5 text-xs font-extrabold rounded-full shrink-0 ${
                                                 isSelected
-                                                    ? 'bg-emerald-600 text-white'
+                                                    ? 'bg-brand-600 text-white'
                                                     : 'bg-slate-100 text-slate-600'
                                             }`}
                                         >
@@ -199,7 +199,7 @@ const Header: React.FC<HeaderProps> = ({
                                     onInquiryClick();
                                     setMenuOpen(false);
                                 }}
-                                className="w-full text-center py-3 rounded-xl font-bold bg-emerald-600 text-white hover:bg-emerald-700"
+                                className="w-full text-center py-3 rounded-xl font-bold bg-brand-600 text-white hover:bg-brand-700"
                             >
                                 파트너십 문의하기
                             </button>

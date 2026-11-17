@@ -119,7 +119,7 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                                     onClick={() => setActiveImageIndex(idx)}
                                     className={`relative w-16 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
                                         activeImageIndex === idx
-                                            ? 'border-emerald-400 scale-105 opacity-100'
+                                            ? 'border-brand-400 scale-105 opacity-100'
                                             : 'border-transparent opacity-60 hover:opacity-90'
                                     }`}
                                 >
@@ -139,10 +139,10 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                     <div className="p-6 md:p-10">
                         {/* 상단 배지 */}
                         <div className="flex flex-wrap items-center gap-2 mb-3">
-                            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-600 text-white whitespace-nowrap">
+                            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-brand-600 text-white whitespace-nowrap">
                                 {item.orgType}
                             </span>
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 whitespace-nowrap">
                                 {item.category}
                             </span>
                             <span className="text-xs text-slate-400 font-medium ml-auto whitespace-nowrap">
@@ -173,7 +173,7 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                         )}
 
                         {/* 프로젝트 요약 정보 박스 */}
-                        <div className="bg-[#F8FAF9] rounded-2xl p-5 md:p-6 mb-8 border border-emerald-100">
+                        <div className="bg-[#F6FAFD] rounded-2xl p-5 md:p-6 mb-8 border border-brand-100">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="bg-white p-4 rounded-xl border border-slate-100 min-w-0">
                                     <span className="block text-xs font-semibold text-slate-400 mb-1">함께한 참여기관</span>
@@ -189,7 +189,7 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                                 </div>
                                 <div className="bg-white p-4 rounded-xl border border-slate-100 min-w-0">
                                     <span className="block text-xs font-semibold text-slate-400 mb-1">활동 구분 · 규모</span>
-                                    <span className="font-extrabold text-emerald-700 text-sm sm:text-base break-keep block">
+                                    <span className="font-extrabold text-brand-700 text-sm sm:text-base break-keep block">
                                         {item.orgType} (약 {item.participants}명 참여)
                                     </span>
                                 </div>

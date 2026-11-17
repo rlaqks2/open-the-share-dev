@@ -21,8 +21,8 @@ const FindAccountModal: React.FC<FindAccountModalProps> = ({ onClose }) => {
             </div>
             <p className="text-center text-slate-600 mb-4">가입 시 사용한 이메일을 입력해주세요.</p>
             <form className="space-y-4">
-                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="이메일" />
-                <button type="submit" className="w-full bg-emerald-600 text-white font-semibold py-3 rounded-lg hover:bg-emerald-700 transition-colors">계정찾기 링크 발송</button>
+                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="이메일" />
+                <button type="submit" className="w-full bg-brand-600 text-white font-semibold py-3 rounded-lg hover:bg-brand-700 transition-colors">계정찾기 링크 발송</button>
             </form>
         </Modal>
     );

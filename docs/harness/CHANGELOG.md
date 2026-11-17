@@ -2,6 +2,13 @@
 
 콘텐츠(포트폴리오 추가 등) 변경은 기록하지 않습니다. 구조·규칙·배포·외부연동이 바뀔 때만 기록합니다.
 
+## 2026-11-17 (2) — 사이트 색상 로고 블루로 전환
+
+- `tailwind.config.js`: 로고 색(#1e96d2 / #197fc3) 기반 `brand` 팔레트와 보조 `navy` 팔레트 추가
+- 전체 컴포넌트: `emerald-*` → `brand-*`, `amber-*` → `navy-*`, 포트폴리오 테마 태그 lime/yellow/green → sky/indigo/cyan, 배경 `#F8FAF9` → `#F6FAFD`, `theme-color` → #197fc3 (같은 날 1차의 초록·노랑 통일을 대체)
+- `useScrollObserver`: 비율 기준(threshold 0.1) → 화면 진입 기준(rootMargin). 길어진 사업안내 섹션이 작은 화면에서 투명하게 남던 문제 수정
+- 문서: CLAUDE.md §5, WORKFLOWS 색상 톤
+
 ## 2026-11-17 — 사이트 개편 1차 (용어·사업 구조·색상)
 
 - About: 'CI 소개' → '브랜드 스토리(BRAND STORY)'로 명칭 변경

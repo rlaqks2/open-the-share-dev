@@ -21,12 +21,12 @@ const SignupModal: React.FC<SignupModalProps> = ({ onClose, onLoginClick }) => {
                 <h2 className="text-2xl font-bold mb-6" id="modal-title">회원가입</h2>
             </div>
             <form className="space-y-4">
-                <input type="text" placeholder="이름" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="이름" />
-                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="이메일" />
-                <input type="password" placeholder="비밀번호" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="비밀번호" />
-                <button type="submit" className="w-full bg-emerald-600 text-white font-semibold py-3 rounded-lg hover:bg-emerald-700 transition-colors">가입하기</button>
+                <input type="text" placeholder="이름" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="이름" />
+                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="이메일" />
+                <input type="password" placeholder="비밀번호" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="비밀번호" />
+                <button type="submit" className="w-full bg-brand-600 text-white font-semibold py-3 rounded-lg hover:bg-brand-700 transition-colors">가입하기</button>
                 <div className="text-center text-sm text-slate-500 pt-4">
-                    이미 계정이 있으신가요? <button type="button" onClick={onLoginClick} className="font-semibold text-emerald-600 hover:underline">로그인</button>
+                    이미 계정이 있으신가요? <button type="button" onClick={onLoginClick} className="font-semibold text-brand-600 hover:underline">로그인</button>
                 </div>
             </form>
         </Modal>

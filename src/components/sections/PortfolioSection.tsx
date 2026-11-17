@@ -18,25 +18,25 @@ const isOTSItem = (item: PortfolioItem) => item.period >= '2025.01.01';
 
 const getOrgBadgeStyle = (item: PortfolioItem) => {
     if (isOTSItem(item)) {
-        return 'bg-emerald-600 text-white';
+        return 'bg-brand-600 text-white';
     }
     return item.orgType === '기업봉사'
-        ? 'bg-emerald-800 text-white'
-        : 'bg-amber-500 text-white';
+        ? 'bg-brand-800 text-white'
+        : 'bg-navy-500 text-white';
 };
 
 const getCategoryPillStyle = (category: string) => {
     switch (category) {
         case '친환경 ESG':
-            return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+            return 'bg-brand-50 text-brand-700 border-brand-200';
         case '찾아가는 과학교실':
-            return 'bg-amber-50 text-amber-700 border-amber-200';
+            return 'bg-navy-50 text-navy-700 border-navy-200';
         case '지역사회 나눔':
-            return 'bg-lime-50 text-lime-700 border-lime-200';
+            return 'bg-sky-50 text-sky-700 border-sky-200';
         case '원데이메이킹':
-            return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+            return 'bg-indigo-50 text-indigo-700 border-indigo-200';
         default:
-            return 'bg-green-50 text-green-700 border-green-200';
+            return 'bg-cyan-50 text-cyan-700 border-cyan-200';
     }
 };
 
@@ -72,17 +72,17 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
     const previewItems = useMemo(() => filteredList.slice(0, 6), [filteredList]);
 
     return (
-        <section id="portfolio" className="py-24 bg-[#F8FAF9]">
+        <section id="portfolio" className="py-24 bg-[#F6FAFD]">
             <div className="max-w-7xl mx-auto px-4">
                 {/* 상단 헤더 영역 */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
                     <div className="min-w-0">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 text-emerald-800 text-xs font-bold mb-3">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100/80 text-brand-800 text-xs font-bold mb-3">
+                            <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse shrink-0"></span>
                             <span className="break-keep">OPEN THE SHARE ARCHIVE · 공식 블로그 실데이터</span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight break-keep">
-                            참여기관과 함께 만든 <span className="text-emerald-600">나눔 스토리</span>
+                            참여기관과 함께 만든 <span className="text-brand-600">나눔 스토리</span>
                         </h2>
                         <p className="text-slate-600 mt-2 text-base md:text-lg break-keep">
                             오픈더쉐어(OPEN THE SHARE) 및 기업·단체가 직접 참여한 {totalCount}건의 실제 사회공헌 현장 기록입니다.
@@ -90,7 +90,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                     </div>
                     <button
                         onClick={() => onViewAllClick(activeTab)}
-                        className="self-start md:self-auto inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 text-white text-sm font-bold hover:bg-emerald-600 transition-colors shadow-sm whitespace-nowrap shrink-0"
+                        className="self-start md:self-auto inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 text-white text-sm font-bold hover:bg-brand-600 transition-colors shadow-sm whitespace-nowrap shrink-0"
                     >
                         <span>포트폴리오 전체보기 ({totalCount}건)</span>
                         <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,8 +109,8 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                                 onClick={() => setActiveTab(tab.key)}
                                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
                                     isActive
-                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                                        : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                                        ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20'
+                                        : 'bg-white text-slate-600 border border-slate-200 hover:border-brand-300 hover:text-brand-700'
                                 }`}
                             >
                                 <span>{tab.label}</span>
@@ -147,7 +147,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                                 {/* 좌측 상단 구분 배지 */}
                                 <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5 pr-3">
                                     {isOTSItem(item) && (
-                                        <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-600 text-white shadow-sm whitespace-nowrap">
+                                        <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-brand-600 text-white shadow-sm whitespace-nowrap">
                                             OPEN THE SHARE
                                         </span>
                                     )}
@@ -194,12 +194,12 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                                     </div>
 
                                     {/* 파트너명 */}
-                                    <p className="text-xs font-black text-emerald-800 tracking-wide uppercase mb-1 line-clamp-1 break-keep">
+                                    <p className="text-xs font-black text-brand-800 tracking-wide uppercase mb-1 line-clamp-1 break-keep">
                                         {item.partner}
                                     </p>
 
                                     {/* 활동 제목 */}
-                                    <h3 className="text-lg font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-600 transition-colors break-keep">
+                                    <h3 className="text-lg font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors break-keep">
                                         {item.title}
                                     </h3>
 
@@ -210,7 +210,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                                 </div>
 
                                 {/* 하단 자세히 보기 유도 */}
-                                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-emerald-800">
+                                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-brand-800">
                                     <span className="whitespace-nowrap">현장 스토리 & 갤러리</span>
                                     <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
                                 </div>

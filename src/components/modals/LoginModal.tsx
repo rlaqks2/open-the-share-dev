@@ -31,15 +31,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onSignupClick, onFindA
                 <h2 className="text-2xl font-bold mb-6" id="modal-title">로그인</h2>
             </div>
             <form className="space-y-4" onSubmit={handleLogin}>
-                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="이메일" />
-                <input type="password" placeholder="비밀번호" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-emerald-500 focus:border-emerald-500" aria-label="비밀번호" />
+                <input type="email" placeholder="이메일" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="이메일" />
+                <input type="password" placeholder="비밀번호" className="w-full px-4 py-3 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" aria-label="비밀번호" />
                 <div className="flex items-center justify-between text-sm">
                     <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+                        <input type="checkbox" className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
                         로그인 상태 유지
                     </label>
                 </div>
-                <button type="submit" className="w-full bg-emerald-600 text-white font-semibold py-3 rounded-lg hover:bg-emerald-700 transition-colors">로그인</button>
+                <button type="submit" className="w-full bg-brand-600 text-white font-semibold py-3 rounded-lg hover:bg-brand-700 transition-colors">로그인</button>
                 <div className="text-center text-sm text-slate-500 py-4">
                     <span className="px-2">또는</span>
                 </div>

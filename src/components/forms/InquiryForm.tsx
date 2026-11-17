@@ -172,7 +172,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         id="orgCategory"
                         value={form.orgCategory}
                         onChange={(e) => set('orgCategory', e.target.value)}
-                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     >
                         <option value="기업">기업 (대기업·중견·강소기업)</option>
                         <option value="공공기관·재단">관공서 · 공공기관 · 재단</option>
@@ -188,7 +188,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         id="programType"
                         value={form.programType}
                         onChange={(e) => set('programType', e.target.value)}
-                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     >
                         <option value="온앤온 (대면 사회공헌)">온앤온 ON&amp;ON (대면 봉사활동)</option>
                         <option value="온팅 (비대면 사회공헌)">온팅 ON-ting (비대면·기부키트 봉사)</option>
@@ -209,7 +209,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         onChange={(e) => set('company', e.target.value)}
                         required
                         placeholder="예: (주)오픈더쉐어"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoComplete="organization"
                     />
                 </div>
@@ -224,7 +224,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         onChange={(e) => set('manager', e.target.value)}
                         required
                         placeholder="예: 홍길동 매니저"
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoComplete="name"
                     />
                 </div>
@@ -243,7 +243,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         onChange={(e) => set('phone', e.target.value)}
                         placeholder="010-0000-0000"
                         required
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoComplete="tel"
                     />
                 </div>
@@ -259,7 +259,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                         onChange={(e) => set('email', e.target.value)}
                         placeholder="name@company.com"
                         required
-                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                         autoComplete="email"
                     />
                 </div>
@@ -275,7 +275,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                     value={form.participants}
                     onChange={(e) => set('participants', e.target.value)}
                     placeholder="예: 임직원 약 40명 / 2026년 5월 중 희망"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 />
             </div>
 
@@ -287,7 +287,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                     id="referral"
                     value={form.referral}
                     onChange={(e) => set('referral', e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 >
                     <option value="">선택해 주세요</option>
                     {REFERRAL_OPTIONS.map((o) => (
@@ -309,7 +309,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                     onChange={(e) => set('message', e.target.value)}
                     rows={3}
                     placeholder="관심 있는 테마(환경·업사이클링, 목공, 벽화, 요리·베이킹, 기부키트 등)나 예산, 궁금하신 점을 자유롭게 남겨주세요."
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 />
             </div>
 
@@ -343,7 +343,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
                     checked={form.agree}
                     onChange={(e) => set('agree', e.target.checked)}
                     required
-                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                 />
                 <label htmlFor="agree" className="text-slate-600 font-medium">
                     (필수) 위 개인정보 수집 및 이용에 동의합니다.
@@ -353,7 +353,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
             <button
                 type="submit"
                 disabled={isSending}
-                className="mt-1 w-full rounded-xl bg-emerald-600 px-4 py-3.5 text-sm font-extrabold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
+                className="mt-1 w-full rounded-xl bg-brand-600 px-4 py-3.5 text-sm font-extrabold text-white hover:bg-brand-700 transition-colors disabled:opacity-60"
             >
                 {isSending ? '문의 접수 중...' : '맞춤형 사회공헌 상담 신청하기'}
             </button>
