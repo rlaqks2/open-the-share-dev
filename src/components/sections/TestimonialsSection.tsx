@@ -165,7 +165,7 @@ const TestimonialsSection: React.FC = () => {
                 {/* 2. 파트너사 담당자 후기 */}
                 <div>
                     <div className="text-center max-w-2xl mx-auto mb-12">
-                        <span className="inline-block px-3.5 py-1 rounded-full bg-navy-50 text-navy-700 text-xs font-extrabold mb-3">
+                        <span className="inline-block px-3.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-extrabold mb-3">
                             PARTNER VOICES
                         </span>
                         <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">

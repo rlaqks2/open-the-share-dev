@@ -39,7 +39,7 @@ const ImpactSection: React.FC = () => {
                             key={stat.id}
                             className="bg-white/10 backdrop-blur-sm border border-white/15 p-7 rounded-3xl text-center hover:bg-white/15 transition-colors min-w-0"
                         >
-                            <p className="text-4xl md:text-5xl font-black text-navy-300 mb-2 whitespace-nowrap">
+                            <p className="text-4xl md:text-5xl font-black text-amber-300 mb-2 whitespace-nowrap">
                                 {stat.value}
                             </p>
                             <p className="font-extrabold text-white text-base sm:text-lg mb-1 break-keep">

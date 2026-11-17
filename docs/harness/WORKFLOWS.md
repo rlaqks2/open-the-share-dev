@@ -65,7 +65,7 @@
 
 ## W7. 디자인/스타일 수정 (난이도 ★~★★)
 
-- 색상 톤: 주색 `brand-600`(로고 블루 #197fc3), 보조 `navy`, 텍스트 `slate-900/600`, 배경 `#F6FAFD` — 팔레트는 `tailwind.config.js` 에 정의. `emerald`·`amber` 는 쓰지 않는다
+- 색상 톤: 주색 `brand-600`(로고 블루 #197fc3), 보조 `amber`(노랑), 텍스트 `slate-900/600`, 배경 `#F6FAFD` — 팔레트는 `tailwind.config.js` 에 정의. `emerald`(초록)는 쓰지 않는다
 - 모서리: 카드 `rounded-3xl`, 버튼 `rounded-full`
 - 한글 줄바꿈: 제목·본문에 `break-keep`
 - Tailwind **v3** 문법만 사용 (`backdrop-blur-xs`, `scale-102` 같은 v4/없는 클래스 주의 → 임의값 `scale-[1.02]` 사용)

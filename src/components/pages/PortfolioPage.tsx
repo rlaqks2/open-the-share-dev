@@ -169,7 +169,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                     </div>
 
                     <div className="max-w-3xl">
-                        <span className="inline-block bg-navy-400 text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full mb-4 tracking-wide">
+                        <span className="inline-block bg-amber-400 text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full mb-4 tracking-wide">
                             OPEN THE SHARE STORY ARCHIVE
                         </span>
                         <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-4 break-keep">
@@ -392,13 +392,13 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                             className={`text-xs font-extrabold px-3 py-1 rounded-full shadow-sm backdrop-blur-md whitespace-nowrap ${
                                                 item.orgType === '기업봉사'
                                                     ? 'bg-brand-600/95 text-white'
-                                                    : 'bg-navy-500/95 text-white'
+                                                    : 'bg-amber-500/95 text-white'
                                             }`}
                                         >
                                             {item.orgType}
                                         </span>
                                         {isOTSItem(item) && (
-                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-white/95 text-brand-800 shadow-sm whitespace-nowrap">
+                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-400/95 text-brand-950 shadow-sm whitespace-nowrap">
                                                 OPEN THE SHARE
                                             </span>
                                         )}

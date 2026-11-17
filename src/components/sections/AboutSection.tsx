@@ -74,12 +74,12 @@ const AboutSection: React.FC = () => {
                                 <h3 className="text-base font-black mt-1 mb-2">미션</h3>
                                 <p className="text-xs text-brand-50 leading-relaxed break-keep">{about.mission}</p>
                             </div>
-                            <div className="p-6 rounded-3xl bg-navy-500 text-white">
-                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-navy-100">
+                            <div className="p-6 rounded-3xl bg-amber-500 text-white">
+                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-100">
                                     VISION
                                 </span>
                                 <h3 className="text-base font-black mt-1 mb-2">비전</h3>
-                                <p className="text-xs text-navy-50 leading-relaxed break-keep">{about.vision}</p>
+                                <p className="text-xs text-amber-50 leading-relaxed break-keep">{about.vision}</p>
                             </div>
                         </div>
                     </div>

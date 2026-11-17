@@ -3,7 +3,7 @@
  * @description 오픈더쉐어의 2대 핵심 사업 유형을 구분해 보여주는 섹션입니다.
  * ① 나눔 키트 제작(핸즈온 프로그램) — 온앤온(대면)·온팅(비대면) 브랜드 + 4대 핵심 사회공헌 콘텐츠 + 옵션 구성
  * ② 기업 행사·컨설팅 대행 — 기획·현장 운영·결과 보고 대행
- * 색상은 로고 블루 톤(메인 brand · 보조 navy)으로 통일합니다.
+ * 색상은 로고 블루 톤(메인 brand · 보조 amber(노랑))으로 통일합니다.
  */
 import React from 'react';
 import { mockData } from '../../data/mockData';
@@ -27,7 +27,7 @@ const ProgramsSection: React.FC = () => {
                     </h2>
                     <p className="text-slate-600 text-base break-keep">
                         직접 만들어 나누는 <strong className="text-brand-700">나눔 키트 제작(핸즈온 프로그램)</strong>과
-                        사회공헌 행사를 대신 기획·운영하는 <strong className="text-navy-600">기업 행사·컨설팅 대행</strong>으로
+                        사회공헌 행사를 대신 기획·운영하는 <strong className="text-amber-600">기업 행사·컨설팅 대행</strong>으로
                         기업과 단체의 사회공헌을 돕습니다.
                     </p>
                 </div>
@@ -43,20 +43,20 @@ const ProgramsSection: React.FC = () => {
                                 className={`group rounded-3xl p-7 sm:p-8 border-2 min-w-0 transition-all hover:shadow-md ${
                                     isKit
                                         ? 'bg-brand-50/60 border-brand-200 hover:border-brand-400'
-                                        : 'bg-navy-50/60 border-navy-200 hover:border-navy-400'
+                                        : 'bg-amber-50/60 border-amber-200 hover:border-amber-400'
                                 }`}
                             >
                                 <div className="flex items-center gap-3 mb-4">
                                     <span
                                         className={`w-12 h-12 rounded-2xl text-white font-black text-lg flex items-center justify-center shrink-0 ${
-                                            isKit ? 'bg-brand-600' : 'bg-navy-500'
+                                            isKit ? 'bg-brand-600' : 'bg-amber-500'
                                         }`}
                                     >
                                         {area.number}
                                     </span>
                                     <span
                                         className={`text-xs font-extrabold uppercase tracking-widest ${
-                                            isKit ? 'text-brand-700' : 'text-navy-700'
+                                            isKit ? 'text-brand-700' : 'text-amber-700'
                                         }`}
                                     >
                                         {area.label}
@@ -71,7 +71,7 @@ const ProgramsSection: React.FC = () => {
                                         <li
                                             key={pt}
                                             className={`text-xs font-bold px-3 py-1 rounded-full bg-white border break-keep ${
-                                                isKit ? 'text-brand-700 border-brand-200' : 'text-navy-700 border-navy-200'
+                                                isKit ? 'text-brand-700 border-brand-200' : 'text-amber-700 border-amber-200'
                                             }`}
                                         >
                                             {pt}
@@ -103,14 +103,14 @@ const ProgramsSection: React.FC = () => {
                                     className={`rounded-3xl p-7 sm:p-9 border-2 flex flex-col justify-between min-w-0 ${
                                         isOnAndOn
                                             ? 'bg-gradient-to-br from-brand-50/70 to-white border-brand-200'
-                                            : 'bg-gradient-to-br from-navy-50/70 to-white border-navy-200'
+                                            : 'bg-gradient-to-br from-amber-50/70 to-white border-amber-200'
                                     }`}
                                 >
                                     <div>
                                         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                                             <span
                                                 className={`px-3.5 py-1 rounded-full text-xs font-extrabold whitespace-nowrap text-white ${
-                                                    isOnAndOn ? 'bg-brand-600' : 'bg-navy-500'
+                                                    isOnAndOn ? 'bg-brand-600' : 'bg-amber-500'
                                                 }`}
                                             >
                                                 {brand.badge}
@@ -127,7 +127,7 @@ const ProgramsSection: React.FC = () => {
                                         </h4>
                                         <p
                                             className={`text-sm font-extrabold mb-4 break-keep ${
-                                                isOnAndOn ? 'text-brand-700' : 'text-navy-700'
+                                                isOnAndOn ? 'text-brand-700' : 'text-amber-700'
                                             }`}
                                         >
                                             “{brand.meaning}”
@@ -147,7 +147,7 @@ const ProgramsSection: React.FC = () => {
                                                 <li key={i} className="text-xs sm:text-sm text-slate-600 flex items-start gap-2 break-keep">
                                                     <span
                                                         className={`font-bold shrink-0 mt-0.5 ${
-                                                            isOnAndOn ? 'text-brand-600' : 'text-navy-600'
+                                                            isOnAndOn ? 'text-brand-600' : 'text-amber-600'
                                                         }`}
                                                     >
                                                         ✓
@@ -181,13 +181,13 @@ const ProgramsSection: React.FC = () => {
                                         className={`p-7 rounded-3xl border transition-all hover:shadow-md min-w-0 ${
                                             isPrimary
                                                 ? 'bg-brand-50/50 border-brand-100 hover:border-brand-400'
-                                                : 'bg-navy-50/50 border-navy-100 hover:border-navy-400'
+                                                : 'bg-amber-50/50 border-amber-100 hover:border-amber-400'
                                         }`}
                                     >
                                         <div className="text-4xl mb-4">{program.icon}</div>
                                         <span
                                             className={`inline-block text-[11px] font-extrabold px-2.5 py-0.5 rounded-md mb-2 whitespace-nowrap ${
-                                                isPrimary ? 'text-brand-700 bg-brand-100/80' : 'text-navy-700 bg-navy-100/80'
+                                                isPrimary ? 'text-brand-700 bg-brand-100/80' : 'text-amber-700 bg-amber-100/80'
                                             }`}
                                         >
                                             {program.subtitle}
@@ -207,7 +207,7 @@ const ProgramsSection: React.FC = () => {
                     {/* 1-3. 프로그램 옵션 구성 (openthe.kr/yc/sub/sub2_1.php 실 데이터) */}
                     <div className="bg-brand-900 text-white rounded-3xl p-7 sm:p-10 md:p-12">
                         <div className="max-w-2xl mb-8">
-                            <span className="text-xs font-extrabold text-navy-300 uppercase tracking-widest">
+                            <span className="text-xs font-extrabold text-amber-300 uppercase tracking-widest">
                                 PROGRAM OPTIONS
                             </span>
                             <h4 className="text-2xl md:text-3xl font-black mt-1 mb-2 break-keep">
@@ -231,7 +231,7 @@ const ProgramsSection: React.FC = () => {
                                         <div className="flex items-center justify-between gap-2 mb-3">
                                             <span
                                                 className={`px-2.5 py-1 rounded-md text-xs font-extrabold whitespace-nowrap ${
-                                                    isBasic ? 'bg-brand-500 text-white' : 'bg-white text-brand-800'
+                                                    isBasic ? 'bg-brand-500 text-white' : 'bg-amber-400 text-brand-950'
                                                 }`}
                                             >
                                                 {opt.option}
@@ -251,10 +251,10 @@ const ProgramsSection: React.FC = () => {
                 {/* ② 기업 행사 · 컨설팅 대행 */}
                 <div
                     id={`business-${eventArea.id}`}
-                    className="scroll-mt-24 rounded-3xl p-7 sm:p-10 md:p-12 bg-gradient-to-br from-navy-50 to-white border-2 border-navy-200"
+                    className="scroll-mt-24 rounded-3xl p-7 sm:p-10 md:p-12 bg-gradient-to-br from-amber-50 to-white border-2 border-amber-200"
                 >
                     <div className="flex items-center gap-3 mb-4">
-                        <span className="w-10 h-10 rounded-xl bg-navy-500 text-white font-black flex items-center justify-center shrink-0">
+                        <span className="w-10 h-10 rounded-xl bg-amber-500 text-white font-black flex items-center justify-center shrink-0">
                             {eventArea.number}
                         </span>
                         <h3 className="text-2xl md:text-3xl font-black text-slate-900 break-keep">{eventArea.title}</h3>
@@ -264,15 +264,15 @@ const ProgramsSection: React.FC = () => {
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                         {eventArea.points.map((pt, i) => (
-                            <div key={pt} className="bg-white rounded-2xl p-5 border border-navy-100 shadow-sm min-w-0">
-                                <span className="text-xs font-extrabold text-navy-600">0{i + 1}</span>
+                            <div key={pt} className="bg-white rounded-2xl p-5 border border-amber-100 shadow-sm min-w-0">
+                                <span className="text-xs font-extrabold text-amber-600">0{i + 1}</span>
                                 <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-1 break-keep">{pt}</p>
                             </div>
                         ))}
                     </div>
                     <a
                         href="#process"
-                        className="inline-flex items-center gap-2 text-sm font-extrabold text-navy-700 hover:text-navy-800 break-keep"
+                        className="inline-flex items-center gap-2 text-sm font-extrabold text-amber-700 hover:text-amber-800 break-keep"
                     >
                         <span>진행 프로세스 자세히 보기</span>
                         <span aria-hidden="true">&darr;</span>

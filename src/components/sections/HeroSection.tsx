@@ -29,7 +29,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInquiryClick, onPortfolioPa
         <section className="relative overflow-hidden bg-gradient-to-b from-[#EAF5FB] via-[#F6FAFD] to-white pt-12 pb-20 border-b border-slate-100">
             {/* 배경 데코레이션 */}
             <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-brand-200/30 blur-3xl pointer-events-none" />
-            <div className="absolute top-40 -left-24 w-80 h-80 rounded-full bg-navy-200/25 blur-3xl pointer-events-none" />
+            <div className="absolute top-40 -left-24 w-80 h-80 rounded-full bg-amber-200/25 blur-3xl pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-12 items-center">
@@ -112,9 +112,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInquiryClick, onPortfolioPa
                                     따뜻한 온기를 켜다! 기업 맞춤형 오프라인 참여 봉사활동
                                 </p>
                             </div>
-                            <div className="bg-white p-5 rounded-3xl border border-navy-100 shadow-sm min-w-0">
+                            <div className="bg-white p-5 rounded-3xl border border-amber-100 shadow-sm min-w-0">
                                 <div className="flex items-center justify-between gap-2 mb-2.5">
-                                    <span className="inline-block px-2.5 py-1 rounded-full bg-navy-50 text-navy-700 text-[11px] font-extrabold whitespace-nowrap">
+                                    <span className="inline-block px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-extrabold whitespace-nowrap">
                                         비대면 사회공헌
                                     </span>
                                     <img
@@ -124,7 +124,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInquiryClick, onPortfolioPa
                                     />
                                 </div>
                                 <h3 className="text-lg font-black text-slate-900 whitespace-nowrap">
-                                    온팅 <span className="text-xs font-extrabold text-navy-600">ON-ting</span>
+                                    온팅 <span className="text-xs font-extrabold text-amber-600">ON-ting</span>
                                 </h3>
                                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed break-keep">
                                     언제 어디서나 따뜻한 만남! DIY 기부키트·온라인 봉사활동

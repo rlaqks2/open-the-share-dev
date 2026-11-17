@@ -71,7 +71,7 @@ docs/harness/               # ★ 하네스 문서 (아래)
 
 1. **이해** — 요청이 어떤 유형인지 [WORKFLOWS](docs/harness/WORKFLOWS.md) 에서 찾는다. (콘텐츠 수정 / 포트폴리오 추가 / 섹션 추가 / 페이지 추가 / 외부연동 추가)
 2. **확인** — 백엔드가 필요한 요청이면 [NO_BACKEND_POLICY](docs/harness/NO_BACKEND_POLICY.md) 의 대안 패턴을 먼저 제시한다.
-3. **변경** — 가능한 한 `mockData.ts`(데이터)만 바꾸고, 컴포넌트 변경은 최소화한다. 기존 Tailwind 스타일 톤(로고 블루 `brand`·보조 `navy`/slate, `rounded-3xl`, `font-black` 제목)을 따른다.
+3. **변경** — 가능한 한 `mockData.ts`(데이터)만 바꾸고, 컴포넌트 변경은 최소화한다. 기존 Tailwind 스타일 톤(로고 블루 `brand`·보조 노랑 `amber`/slate, `rounded-3xl`, `font-black` 제목)을 따른다.
 4. **검증** — [VERIFICATION](docs/harness/VERIFICATION.md) 체크리스트 실행. 최소한 `npm run build` 통과 + 모바일 폭(375px) 확인.
 5. **기록** — 구조·규칙이 바뀌면 해당 하네스 문서와 [CHANGELOG](docs/harness/CHANGELOG.md) 를 같이 수정한다.
 6. **배포** — [DEPLOYMENT](docs/harness/DEPLOYMENT.md). 사람의 확인 없이 `master` 에 push 하지 않는다.
