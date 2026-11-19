@@ -27,6 +27,7 @@ const ALLOWED_EVENTS = new Set([
   'generate_lead',
   'inquiry_error',
   'portfolio_view',
+  'portfolio_share',
   'search',
 ]);
 

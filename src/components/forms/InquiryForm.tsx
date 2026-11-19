@@ -1,7 +1,7 @@
 /**
  * @file InquiryForm.tsx
  * @description openthe.kr/yc/sub/sub3_2.php의 온라인 상담 신청 양식을 반영한 파트너십 문의 폼 컴포넌트입니다.
- * 단체 유형(기업/관공서/학교/기타), 희망 방식(대면 온앤온 / 비대면 온팅), 예상 인원 등을 포함하며,
+ * 단체 유형(기업/관공서/학교/기타), 희망 프로그램(원데이메이킹 대면·비대면 / 행사 컨설팅·대행), 예상 인원·희망 시기·예산 범위 등을 포함하며,
  * 브라우저 기본 alert() 대신 인라인 상태 메시지를 사용하여 보안 및 UX 가이드라인을 준수합니다.
  */
 import React, { useRef, useState } from 'react';
@@ -27,6 +27,20 @@ const REFERRAL_OPTIONS = [
     '기타',
 ] as const;
 
+/** 희망 프로그램 — 2대 핵심 사업(① 원데이메이킹 ② 행사 컨설팅·대행) 기준. 값은 메일 제목과 측정(generate_lead.program_type)에 쓰입니다. */
+const PROGRAM_TYPE_OPTIONS = [
+    { value: '원데이메이킹 · 대면(온앤온)', label: '원데이메이킹 · 대면 (온앤온)' },
+    { value: '원데이메이킹 · 비대면(온팅)', label: '원데이메이킹 · 비대면 (온팅)' },
+    { value: '사회공헌 행사 컨설팅·대행', label: '사회공헌 행사 컨설팅 · 대행' },
+    { value: '미정 · 상담 후 결정', label: '아직 미정 (상담 후 결정)' },
+] as const;
+
+/** 희망 진행 시기 (선택) — 담당자가 첫 통화 전에 일정에 맞는 제안을 준비하도록 */
+const TIMING_OPTIONS = ['1개월 이내', '1~3개월 이내', '3~6개월 이내', '6개월 이후 · 연간 계획 수립 중', '미정'] as const;
+
+/** 예산 범위 (선택) — 구간은 영업 기준에 맞게 자유롭게 수정 */
+const BUDGET_OPTIONS = ['300만원 미만', '300~500만원', '500~1,000만원', '1,000~3,000만원', '3,000만원 이상', '미정 · 상담 후 결정'] as const;
+
 /**
  * 문의 식별번호. 측정 이벤트(generate_lead.lead_id)와 문의 메일에 같은 값을 넣어,
  * 담당자가 메일의 번호로 미팅·계약 결과를 기록하면 유입 채널과 연결해 볼 수 있습니다. (개인정보 아님)
@@ -49,13 +63,15 @@ interface InquiryFormProps {
 const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initialMessage = '' }) => {
     const [form, setForm] = useState({
         orgCategory: '기업',
-        programType: '온앤온 (대면 사회공헌)',
+        programType: PROGRAM_TYPE_OPTIONS[0].value as string,
         company: '',
         manager: '',
         title: '',
         phone: '',
         email: '',
         participants: '',
+        timing: '',
+        budget: '',
         referral: '',
         message: initialMessage,
         agree: false,
@@ -123,8 +139,8 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initial
             email: form.email,
             phone: form.phone,
             // 템플릿을 고치지 않아도 메일 제목·본문에 식별번호와 유입 경로가 보이도록 기존 필드에 덧붙인다
-            title: `[${leadId}] ${form.title} (${form.programType} / 예상인원: ${form.participants || '미정'})`,
-            message: `${form.message}\n\n---\n문의번호: ${leadId}\n알게 된 경로: ${referral}`,
+            title: `[${leadId}] ${form.title} (${form.programType} / 예상인원: ${form.participants || '미정'} / 시기: ${form.timing || '미정'} / 예산: ${form.budget || '미정'})`,
+            message: `${form.message}\n\n---\n희망 프로그램: ${form.programType}\n예상 인원: ${form.participants || '미정'}\n희망 시기: ${form.timing || '미정'}\n예산 범위: ${form.budget || '미정'}\n문의번호: ${leadId}\n알게 된 경로: ${referral}`,
         };
 
         emailjs
@@ -184,7 +200,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initial
                 </div>
                 <div>
                     <label htmlFor="programType" className="block text-xs font-bold text-slate-700 mb-1">
-                        희망 프로그램 방식 <span className="text-rose-500">*</span>
+                        희망 프로그램 <span className="text-rose-500">*</span>
                     </label>
                     <select
                         id="programType"
@@ -192,9 +208,11 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initial
                         onChange={(e) => set('programType', e.target.value)}
                         className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     >
-                        <option value="온앤온 (대면 사회공헌)">온앤온 ON&amp;ON (대면 봉사활동)</option>
-                        <option value="온팅 (비대면 사회공헌)">온팅 ON-ting (비대면·기부키트 봉사)</option>
-                        <option value="대면+비대면 복합 컨설팅">대면 + 비대면 맞춤형 컨설팅</option>
+                        {PROGRAM_TYPE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>
+                                {o.label}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -267,18 +285,56 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initial
                 </div>
             </div>
 
-            <div>
-                <label htmlFor="participants" className="block text-xs font-bold text-slate-700 mb-1">
-                    예상 참여 인원 및 희망 시기
-                </label>
-                <input
-                    id="participants"
-                    maxLength={200}
-                    value={form.participants}
-                    onChange={(e) => set('participants', e.target.value)}
-                    placeholder="예: 임직원 약 40명 / 2026년 5월 중 희망"
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label htmlFor="participants" className="block text-xs font-bold text-slate-700 mb-1">
+                        예상 참여 인원 <span className="text-slate-400 font-medium">(선택)</span>
+                    </label>
+                    <input
+                        id="participants"
+                        maxLength={100}
+                        value={form.participants}
+                        onChange={(e) => set('participants', e.target.value)}
+                        placeholder="예: 임직원 약 40명"
+                        className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="timing" className="block text-xs font-bold text-slate-700 mb-1">
+                        희망 시기 <span className="text-slate-400 font-medium">(선택)</span>
+                    </label>
+                    <select
+                        id="timing"
+                        value={form.timing}
+                        onChange={(e) => set('timing', e.target.value)}
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    >
+                        <option value="">선택해 주세요</option>
+                        {TIMING_OPTIONS.map((o) => (
+                            <option key={o} value={o}>
+                                {o}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="budget" className="block text-xs font-bold text-slate-700 mb-1">
+                        예산 범위 <span className="text-slate-400 font-medium">(선택)</span>
+                    </label>
+                    <select
+                        id="budget"
+                        value={form.budget}
+                        onChange={(e) => set('budget', e.target.value)}
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                    >
+                        <option value="">선택해 주세요</option>
+                        {BUDGET_OPTIONS.map((o) => (
+                            <option key={o} value={o}>
+                                {o}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             <div>
@@ -310,7 +366,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initial
                     value={form.message}
                     onChange={(e) => set('message', e.target.value)}
                     rows={3}
-                    placeholder="관심 있는 테마(환경·업사이클링, 목공, 벽화, 요리·베이킹, 기부키트 등)나 예산, 궁금하신 점을 자유롭게 남겨주세요."
+                    placeholder="관심 있는 테마(베이킹, 과학교실, 공간 개선, 친환경 등)나 궁금하신 점을 자유롭게 남겨주세요."
                     className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 />
             </div>

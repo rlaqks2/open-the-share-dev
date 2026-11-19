@@ -2,7 +2,7 @@
  * @file HeroSection.tsx
  * @description 웹사이트의 메인 히어로 섹션 컴포넌트입니다.
  * 오픈더쉐어(https://openthe.kr/)의 공식 슬로건("더 나은 사회를 위한 고민, 오픈더쉐어가 함께합니다")과
- * 대표 대면/비대면 사회공헌 브랜드(온앤온 / 온팅) 원본 아이콘,
+ * 2대 핵심 사업(① 원데이메이킹 — 대면 온앤온·비대면 온팅 ② 사회공헌 행사 컨설팅·대행) 요약 카드,
  * 그리고 카카오 같이가치 / 네이버 해피빈 감성의 최신 스토리텔링 카드를 함께 배치합니다.
  */
 import React from 'react';
@@ -20,7 +20,8 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onInquiryClick, onPortfolioPageClick, onPortfolioItemClick }) => {
-    const { hero, portfolioItems } = mockData;
+    const { hero, portfolioItems, businessAreas } = mockData;
+    const [kitArea, eventArea] = businessAreas;
     const latestItems = [...portfolioItems]
         .sort((a, b) => b.period.localeCompare(a.period))
         .slice(0, 3);
@@ -92,44 +93,41 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInquiryClick, onPortfolioPa
 
                     {/* 우측 브랜드 & 최신 스토리 카드 */}
                     <div className="lg:col-span-5 space-y-4 min-w-0">
-                        {/* 대표 프로그램 2종 요약 카드 (공식 아이콘 적용 & 깨진 한자 제거) */}
+                        {/* 2대 핵심 사업 요약 카드 (사업 안내 섹션과 같은 구조 — 온앤온·온팅은 ①의 운영 방식으로 표기) */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                            <div className="bg-white p-5 rounded-3xl border border-brand-100 shadow-sm min-w-0">
+                            <a
+                                href="#programs"
+                                className="block bg-white p-5 rounded-3xl border border-brand-100 shadow-sm min-w-0 hover:border-brand-300 hover:shadow-md transition-all"
+                            >
                                 <div className="flex items-center justify-between gap-2 mb-2.5">
                                     <span className="inline-block px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 text-[11px] font-extrabold whitespace-nowrap">
-                                        대면 사회공헌
+                                        {kitArea.number} 핸즈온 프로그램
                                     </span>
-                                    <img
-                                        src={onnonIcon}
-                                        alt="온앤온 공식 아이콘"
-                                        className="w-9 h-9 object-contain shrink-0"
-                                    />
+                                    <span className="flex items-center -space-x-1.5 shrink-0">
+                                        <img src={onnonIcon} alt="" className="w-7 h-7 object-contain" />
+                                        <img src={ontingIcon} alt="" className="w-7 h-7 object-contain" />
+                                    </span>
                                 </div>
-                                <h3 className="text-lg font-black text-slate-900 whitespace-nowrap">
-                                    온앤온 <span className="text-xs font-extrabold text-brand-600">ON&amp;ON</span>
-                                </h3>
+                                <h3 className="text-base font-black text-slate-900 break-keep">원데이메이킹</h3>
                                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed break-keep">
-                                    따뜻한 온기를 켜다! 기업 맞춤형 오프라인 참여 봉사활동
+                                    나눔 키트를 직접 만들어 기부 · 대면(온앤온) / 비대면(온팅)
                                 </p>
-                            </div>
-                            <div className="bg-white p-5 rounded-3xl border border-amber-100 shadow-sm min-w-0">
+                            </a>
+                            <a
+                                href="#programs"
+                                className="block bg-white p-5 rounded-3xl border border-amber-100 shadow-sm min-w-0 hover:border-amber-300 hover:shadow-md transition-all"
+                            >
                                 <div className="flex items-center justify-between gap-2 mb-2.5">
                                     <span className="inline-block px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-extrabold whitespace-nowrap">
-                                        비대면 사회공헌
+                                        {eventArea.number} 행사 · 컨설팅
                                     </span>
-                                    <img
-                                        src={ontingIcon}
-                                        alt="온팅 공식 아이콘"
-                                        className="w-9 h-9 object-contain shrink-0"
-                                    />
+                                    <span className="text-2xl leading-none shrink-0" aria-hidden="true">📋</span>
                                 </div>
-                                <h3 className="text-lg font-black text-slate-900 whitespace-nowrap">
-                                    온팅 <span className="text-xs font-extrabold text-amber-600">ON-ting</span>
-                                </h3>
+                                <h3 className="text-base font-black text-slate-900 break-keep">사회공헌 행사 대행</h3>
                                 <p className="text-xs text-slate-500 mt-1.5 leading-relaxed break-keep">
-                                    언제 어디서나 따뜻한 만남! DIY 기부키트·온라인 봉사활동
+                                    기획 · 현장 운영 · 임팩트 리포트까지 한 번에
                                 </p>
-                            </div>
+                            </a>
                         </div>
 
                         {/* 최근 진행 캠페인 라이브 피드 카드 */}

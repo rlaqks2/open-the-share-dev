@@ -31,6 +31,7 @@ export type AnalyticsEventName =
     | 'generate_lead' // 문의 제출 성공 (GA4 권장 이벤트명 → 전환으로 지정)
     | 'inquiry_error' // 문의 제출 실패 (EmailJS 오류)
     | 'portfolio_view' // 포트폴리오 상세 열람
+    | 'portfolio_share' // 포트폴리오 상세 '링크 복사' (item_id, category)
     | 'search'; // 사이트 검색 (search_term)
 
 type EventParams = Record<string, string | number | boolean | undefined>;

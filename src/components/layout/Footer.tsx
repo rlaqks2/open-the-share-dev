@@ -73,7 +73,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             <p className="text-xs text-brand-400 font-bold mt-2">(주)오픈더쉐어</p>
                         </div>
                         <p className="text-sm text-slate-400 leading-relaxed break-keep">
-                            더 나은 사회를 위한 고민, 오픈더쉐어가 함께합니다. 기업 맞춤형 대면 사회공헌(온앤온) 및 비대면 사회공헌(온팅) 전문 파트너.
+                            더 나은 사회를 위한 고민, 오픈더쉐어가 함께합니다. 기업·기관 맞춤형 원데이메이킹(나눔 키트 제작) 및 사회공헌 행사 컨설팅·대행 전문 파트너.
                         </p>
                     </div>
 
@@ -94,7 +94,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                                     onClick={() => onNavigateHome && onNavigateHome('programs')}
                                     className="text-slate-400 hover:text-brand-400 transition-colors text-left"
                                 >
-                                    사업소개 (온앤온 · 온팅)
+                                    사업소개 (원데이메이킹 · 행사 대행)
                                 </button>
                             </li>
                             <li>

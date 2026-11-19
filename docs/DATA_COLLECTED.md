@@ -33,7 +33,8 @@ openthe.kr 이 방문자에게서 수집하는 데이터의 **전체 목록**입
 | `generate_lead` | 문의 메일 발송 **성공** | `org_category`(기업/관공서/학교/기타), `program_type`(온앤온/온팅), `referral`(알게 된 경로, 미선택 시 `미선택`), `lead_id`(문의 식별번호) | `forms/InquiryForm.tsx` |
 | `inquiry_error` | 문의 메일 발송 실패 | `org_category`, `lead_id` | `forms/InquiryForm.tsx` |
 | `contact_click` | 전화·휴대전화·이메일 링크 클릭 | `channel`: `tel` / `mobile` / `email`, `location`: `footer` (번호·주소 값은 보내지 않음) | `layout/Footer.tsx` |
-| `portfolio_view` | 포트폴리오 상세 모달 열람 | `item_id`, `item_title`, `partner`, `category` | `App.tsx` `openPortfolioDetail` |
+| `portfolio_view` | 포트폴리오 상세 모달 열람 | `item_id`, `item_title`, `partner`, `category`, `source`(click/similar/shared_link) | `App.tsx` `openPortfolioDetail` |
+| `portfolio_share` | 포트폴리오 상세에서 '링크 복사' | `item_id`, `category` | `PortfolioDetailModal.tsx` |
 | `search` | 검색창 입력이 1.2초 멈췄을 때 (2자 이상, 최대 50자) | `search_term` | `modals/SearchModal.tsx` |
 
 - GA4 의 첫 화면 `page_view` 는 gtag 가 자동 전송합니다 (실제 URL·UTM 포함). Postgres 는 매 화면 기록합니다.

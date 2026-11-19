@@ -26,7 +26,7 @@ const ORG_TABS = [
 
 const CATEGORY_CHIPS = [
     { id: 'all', label: '전체 테마', icon: '🌈' },
-    { id: '원데이메이킹', label: '원데이메이킹 (온앤온·온팅)', icon: '🎁' },
+    { id: '원데이메이킹', label: '원데이메이킹 (나눔 키트)', icon: '🎁' },
     { id: '찾아가는 과학교실', label: '찾아가는 과학교실', icon: '🔬' },
     { id: '스페이스 업사이클링', label: '스페이스 업사이클링', icon: '🏠' },
     { id: '친환경 ESG', label: '친환경 ESG', icon: '🌱' },
@@ -527,7 +527,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                             우리 기업·단체만의 특별한 나눔 스토리를 시작해 보세요
                         </h3>
                         <p className="text-sm md:text-base text-slate-300 break-keep">
-                            가용 예산과 참여 인원, 희망 지원 대상에 맞춘 최적의 온앤온(대면)·온팅(비대면) 기획안을 제안해 드립니다.
+                            가용 예산과 참여 인원, 희망 지원 대상에 맞춘 원데이메이킹·사회공헌 행사 기획안을 제안해 드립니다.
                         </p>
                     </div>
                     <div className="flex flex-wrap gap-3 shrink-0">

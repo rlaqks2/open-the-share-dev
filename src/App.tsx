@@ -26,6 +26,15 @@ import Modal from './components/ui/Modal';
 import { trackPageView, trackEvent } from './services/analytics';
 import { useScrollObserver } from './hooks/useScrollObserver';
 import { PortfolioItem } from './types';
+import { mockData } from './data/mockData';
+
+/** 주소창의 ?story=ID 를 바꾼다 (새 기록을 남기지 않음). null 이면 제거. */
+const setStoryParam = (id: number | null) => {
+    const url = new URL(window.location.href);
+    if (id === null) url.searchParams.delete('story');
+    else url.searchParams.set('story', String(id));
+    window.history.replaceState(window.history.state, '', url.toString());
+};
 
 type ModalType = 'search' | 'inquiry' | 'portfolioDetail' | 'privacy';
 
@@ -57,17 +66,34 @@ function App() {
         }
     }, [currentView, initialPortfolioFilter]);
 
-    // 포트폴리오 상세 모달 열기
-    const openPortfolioDetail = (item: PortfolioItem) => {
+    // 포트폴리오 상세 모달 열기 (주소창에 ?story=ID 를 남겨 그대로 복사·공유할 수 있게 함)
+    const openPortfolioDetail = (item: PortfolioItem, source = 'click') => {
         setSelectedPortfolioItem(item);
         setActiveModal('portfolioDetail');
+        setStoryParam(item.id);
         trackEvent('portfolio_view', {
             item_id: String(item.id),
             item_title: item.title,
             partner: item.partner,
             category: item.category,
+            source,
         });
     };
+
+    // 공유 링크로 들어온 경우: ?story=ID → 해당 사례 상세 열기 / #섹션 → 해당 섹션으로 스크롤
+    useEffect(() => {
+        const storyId = Number(new URLSearchParams(window.location.search).get('story'));
+        const shared = storyId ? mockData.portfolioItems.find((p) => p.id === storyId) : undefined;
+        if (shared) {
+            openPortfolioDetail(shared, 'shared_link');
+            return;
+        }
+        const sectionId = decodeURIComponent(window.location.hash.slice(1));
+        if (sectionId) {
+            setTimeout(() => document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' }), 300);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // 문의 모달 열기 (source: 어느 버튼에서 열었는지 — 전환 경로 분석용)
     const openInquiry = (source: string, prefill = '') => {
@@ -80,6 +106,7 @@ function App() {
     const closeModal = useCallback(() => {
         setActiveModal(null);
         setSelectedPortfolioItem(null);
+        setStoryParam(null);
     }, []);
 
     // 홈으로 이동 및 특정 섹션 스크롤
@@ -168,7 +195,11 @@ function App() {
             )}
             {activeModal === 'inquiry' && <InquiryModal onClose={closeModal} initialMessage={inquiryPrefill} />}
             {activeModal === 'portfolioDetail' && (
-                <PortfolioDetailModal item={selectedPortfolioItem} onClose={closeModal} />
+                <PortfolioDetailModal
+                    item={selectedPortfolioItem}
+                    onClose={closeModal}
+                    onSelectItem={(s) => openPortfolioDetail(s, 'similar')}
+                />
             )}
             {activeModal === 'privacy' && (
                 <Modal open onClose={closeModal} maxWidth="max-w-3xl" noPadding>

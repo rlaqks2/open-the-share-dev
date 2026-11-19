@@ -22,7 +22,8 @@
 | `inquiry_open` | 문의 모달 열기 | `source`: header / hero / cta / portfolio_page / programs | |
 | `generate_lead` | 문의 메일 발송 성공 | `org_category`, `program_type` | **주요 이벤트(전환)로 지정** |
 | `inquiry_error` | 문의 발송 실패 | `org_category` | |
-| `portfolio_view` | 포트폴리오 상세 열람 | `item_id`, `item_title`, `partner`, `category` | |
+| `portfolio_view` | 포트폴리오 상세 열람 | `item_id`, `item_title`, `partner`, `category`, `source`(click/similar/shared_link) | |
+| `portfolio_share` | 포트폴리오 상세 '링크 복사' | `item_id`, `category` | Postgres 저장은 `collect` 함수 재배포 후 |
 | `search` | 검색어 입력 후 1.2초 멈춤 (2자 이상) | `search_term` | 자동(사이트 검색) |
 
 **이벤트 추가 절차**: ① `analytics.ts` 의 `AnalyticsEventName` ② `supabase/functions/collect/index.ts` 의 `ALLOWED_EVENTS` ③ 이 표 ④ 수집 항목이 늘면 `privacyPolicy.ts`. 이름·연락처·문의 내용 등 **개인정보는 props 에 절대 넣지 않습니다.**
@@ -165,3 +166,18 @@ create policy analytics_reader_select on public.ip_lookups  for select to analyt
 | 스팸 의심 | 함수 URL 은 공개값이고 Origin 헤더는 브라우저 밖에서 위조 가능. 이상 유입 시 해당 IP 행 삭제, 계속되면 함수를 새 이름(`collect_v2`)으로 배포하고 Variables 교체 |
 | 구글 시트 로그 종료 | Postgres 수집이 1~2주 안정적이면 GitHub Variables `VITE_GOOGLE_SHEET_WEBHOOK_URL` 삭제 → 재배포 → 처리방침에서 Google Sheets·브라우저 ipapi/ipify 항목 정리 |
 | 비영리 승인 후 | GA4·GCP·Looker Studio 소유권을 Workspace 계정으로 이전, Ad Grants 를 GA4 에 연결 (`generate_lead` 전환 가져오기) |
+
+## 6. 월간 점검 루틴 (매월 첫 주, 30분)
+
+숫자를 보고 다음 달 사이트 작업 1~2개를 정하는 것이 목적입니다. 위 4장 쿼리·대시보드를 그대로 씁니다.
+
+| 순서 | 볼 것 | 판단 예시 |
+|---|---|---|
+| 1 | 퍼널: 방문 → `inquiry_open` → `form_start` → `generate_lead` 세션 수 | 열기 대비 작성 시작이 낮으면 폼 항목·문구 점검, 작성 대비 제출이 낮으면 필수 항목 축소 |
+| 2 | `inquiry_open.source` 별 열기·제출 | 문의가 잘 나오는 버튼(예: `programs` 구성 옵션)은 더 잘 보이게, 안 쓰이는 버튼은 정리 |
+| 3 | `portfolio_view` 상위 사례, `source`(`click`/`similar`/`shared_link`), `portfolio_share` 수 | 공유·조회가 많은 사례를 메인·사업 안내 대표 사례로 올림 |
+| 4 | 유입 경로(검색·블로그·SNS·직접) | 블로그 유입이 크면 블로그 글 하단에 사이트 링크·사례 링크(`?story=ID`) 추가 |
+| 5 | 문의 메일의 희망 시기·예산 범위 분포 (메일함 기준) | 예산 구간·시기 선택지가 실제와 맞는지 조정 (`InquiryForm.tsx` `TIMING_OPTIONS`·`BUDGET_OPTIONS`) |
+| 6 | 계절 | 상반기(연간 계획)·하반기(예산 집행, 연말 나눔) 시즌 전에 히어로 문구·대표 사례 교체 |
+
+결과는 한 줄로 `docs/harness/CHANGELOG.md` 또는 팀 메모에 남깁니다.

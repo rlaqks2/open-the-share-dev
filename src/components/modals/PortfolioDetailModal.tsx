@@ -7,18 +7,82 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../ui/Modal';
 import { PortfolioItem } from '../../types';
+import { mockData } from '../../data/mockData';
+import { trackEvent } from '../../services/analytics';
 
 interface PortfolioDetailModalProps {
     item: PortfolioItem | null;
     onClose: () => void;
+    /** '비슷한 사례' 카드를 눌렀을 때 해당 사례로 전환 */
+    onSelectItem?: (item: PortfolioItem) => void;
 }
 
-const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClose }) => {
+/** 이 사례를 바로 여는 공유 주소 (예: https://openthe.kr/?story=123) */
+export const getStoryShareUrl = (id: number) =>
+    `${window.location.origin}${window.location.pathname}?story=${id}`;
+
+/** 클립보드 복사: Clipboard API(1초 안에 응답 없으면 포기) → 예전 방식(execCommand) 순으로 시도 */
+const copyText = async (text: string): Promise<boolean> => {
+    try {
+        if (navigator.clipboard) {
+            await Promise.race([
+                navigator.clipboard.writeText(text),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 1000)),
+            ]);
+            return true;
+        }
+    } catch {
+        // 아래 방식으로 재시도
+    }
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+    } catch {
+        return false;
+    }
+};
+
+/**
+ * 비슷한 사례 3건: 같은 프로그램(category) → 같은 참여 유형(기업/단체) 우선 → 최신순.
+ * 담당자가 "우리와 비슷한 곳은 어떻게 했나"를 바로 이어서 볼 수 있게 한다.
+ * (참여 인원은 블로그 자동 수집 시 기본값 30 이 들어가는 경우가 많아 기준에서 제외)
+ */
+const findSimilarItems = (item: PortfolioItem, limit = 3): PortfolioItem[] =>
+    mockData.portfolioItems
+        .filter((p) => p.id !== item.id && p.category === item.category)
+        .sort(
+            (a, b) =>
+                Number(b.orgType === item.orgType) - Number(a.orgType === item.orgType) ||
+                b.period.localeCompare(a.period)
+        )
+        .slice(0, limit);
+
+const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClose, onSelectItem }) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         setActiveImageIndex(0);
+        setCopied(false);
     }, [item]);
+
+    const copyShareLink = async () => {
+        if (!item) return;
+        const url = getStoryShareUrl(item.id);
+        const ok = await copyText(url);
+        // 복사가 막힌 브라우저에서는 입력창으로 직접 복사하도록 안내
+        if (!ok) window.prompt('아래 주소를 복사해 공유해 주세요.', url);
+        setCopied(true);
+        trackEvent('portfolio_share', { item_id: String(item.id), category: item.category });
+    };
 
     if (!item) return null;
 
@@ -48,6 +112,7 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
         return filtered.length > 0 ? filtered : [item.imageUrl];
     }, [item]);
     const currentImage = images[activeImageIndex] || item.imageUrl;
+    const similarItems = findSimilarItems(item);
 
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
         if (e.currentTarget.src !== item.imageUrl) {
@@ -206,17 +271,59 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                             </div>
                         </div>
 
+                        {/* 비슷한 사례 (같은 프로그램 · 같은 참여 유형 · 비슷한 인원) */}
+                        {similarItems.length > 0 && (
+                            <div className="mb-8">
+                                <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-wider mb-3">
+                                    비슷한 사례
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    {similarItems.map((s) => (
+                                        <button
+                                            key={s.id}
+                                            type="button"
+                                            onClick={() => onSelectItem && onSelectItem(s)}
+                                            className="text-left rounded-2xl border border-slate-200 overflow-hidden hover:border-brand-400 hover:shadow-md transition-all min-w-0 bg-white"
+                                        >
+                                            <img
+                                                src={s.imageUrl}
+                                                alt=""
+                                                loading="lazy"
+                                                className="w-full h-24 object-cover bg-slate-100"
+                                            />
+                                            <div className="p-3">
+                                                <p className="text-[11px] font-bold text-brand-600 truncate">
+                                                    {s.orgType} · {s.partner}
+                                                </p>
+                                                <p className="text-xs font-extrabold text-slate-900 line-clamp-2 break-keep mt-0.5">
+                                                    {s.title}
+                                                </p>
+                                                <p className="text-[11px] text-slate-500 mt-1">{s.period}</p>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* 하단 액션 버튼 */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-slate-200">
                             <div className="text-xs text-slate-500 break-keep">
-                                * 공식 네이버 블로그에서 전체 현장 스케치 사진과 상세 후기를 확인하실 수 있습니다.
+                                * '링크 복사'로 이 사례를 사내 메신저·메일로 바로 공유할 수 있습니다.
                             </div>
-                            <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+                            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto shrink-0">
                                 <button
                                     onClick={onClose}
                                     className="px-5 py-3 rounded-full border border-slate-300 text-slate-700 font-bold text-sm hover:bg-slate-100 transition-colors whitespace-nowrap"
                                 >
                                     닫기
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={copyShareLink}
+                                    className="px-5 py-3 rounded-full border border-brand-300 text-brand-700 font-bold text-sm hover:bg-brand-50 transition-colors whitespace-nowrap"
+                                >
+                                    {copied ? '✓ 링크 복사됨' : '🔗 링크 복사'}
                                 </button>
                                 {item.blogLink && (
                                     <a
