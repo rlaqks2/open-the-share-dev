@@ -42,6 +42,8 @@ function App() {
     // 모달 상태 관리
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);
     const [selectedPortfolioItem, setSelectedPortfolioItem] = useState<PortfolioItem | null>(null);
+    // 문의 폼 '문의 내용' 기본값 (사업 안내의 나눔 키트 구성 선택 등에서 채워 넣음)
+    const [inquiryPrefill, setInquiryPrefill] = useState('');
 
     // 화면 전환 시 가상 페이지뷰 측정 (GA4 / Postgres / 구글 시트 — 설정된 곳으로만, docs/ANALYTICS.md)
     useEffect(() => {
@@ -68,7 +70,8 @@ function App() {
     };
 
     // 문의 모달 열기 (source: 어느 버튼에서 열었는지 — 전환 경로 분석용)
-    const openInquiry = (source: string) => {
+    const openInquiry = (source: string, prefill = '') => {
+        setInquiryPrefill(prefill);
         setActiveModal('inquiry');
         trackEvent('inquiry_open', { source });
     };
@@ -123,7 +126,11 @@ function App() {
                     />
                     <AboutSection />
                     <ImpactSection />
-                    <ProgramsSection />
+                    <ProgramsSection
+                        onInquiryClick={(summary) => openInquiry('programs', `[선택한 나눔 키트 구성] ${summary}
+
+`)}
+                    />
                     <ProcessSection />
                     <PortfolioSection
                         onPortfolioItemClick={openPortfolioDetail}
@@ -159,7 +166,7 @@ function App() {
                     onOpenPortfolioPage={() => handleNavigatePortfolio('all')}
                 />
             )}
-            {activeModal === 'inquiry' && <InquiryModal onClose={closeModal} />}
+            {activeModal === 'inquiry' && <InquiryModal onClose={closeModal} initialMessage={inquiryPrefill} />}
             {activeModal === 'portfolioDetail' && (
                 <PortfolioDetailModal item={selectedPortfolioItem} onClose={closeModal} />
             )}

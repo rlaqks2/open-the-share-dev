@@ -42,9 +42,11 @@ function createLeadId(): string {
 interface InquiryFormProps {
     onSubmitted: () => void;
     onError?: () => void;
+    /** '문의 내용' 기본값 (예: 사업 안내에서 선택한 나눔 키트 구성) */
+    initialMessage?: string;
 }
 
-const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
+const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError, initialMessage = '' }) => {
     const [form, setForm] = useState({
         orgCategory: '기업',
         programType: '온앤온 (대면 사회공헌)',
@@ -55,7 +57,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ onSubmitted, onError }) => {
         email: '',
         participants: '',
         referral: '',
-        message: '',
+        message: initialMessage,
         agree: false,
         website: '', // 스팸봇 차단용 허니팟 (사람에게는 보이지 않음)
     });

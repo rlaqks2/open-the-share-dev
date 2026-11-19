@@ -13,6 +13,7 @@ import InquiryForm from '../forms/InquiryForm';
 // InquiryModal 컴포넌트가 받는 props의 타입을 정의
 interface InquiryModalProps {
     onClose: () => void; // 모달을 닫을 때 호출될 함수
+    initialMessage?: string; // '문의 내용' 칸 기본값 (예: 선택한 나눔 키트 구성)
 }
 
 // 폼 제출 성공 시 보여줄 메시지 컴포넌트
@@ -38,7 +39,7 @@ const ErrorMessage: React.FC<{ onClose: () => void, onRetry: () => void }> = ({ 
     </div>
 );
 
-const InquiryModal: React.FC<InquiryModalProps> = ({ onClose }) => {
+const InquiryModal: React.FC<InquiryModalProps> = ({ onClose, initialMessage = '' }) => {
     // 폼 제출 여부를 관리하는 state
     const [isSubmitted, setSubmitted] = useState(false);
     // 폼 제출 실패 여부를 관리하는 state
@@ -62,6 +63,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({ onClose }) => {
                 <InquiryForm
                     onSubmitted={() => setSubmitted(true)}
                     onError={() => setError(true)}
+                    initialMessage={initialMessage}
                 />
             </>
         );

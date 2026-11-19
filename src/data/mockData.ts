@@ -61,18 +61,18 @@ export const mockData = {
       id: "kit",
       number: "01",
       label: "HANDS-ON PROGRAM",
-      title: "나눔 키트 제작 (핸즈온 프로그램)",
-      summary: "임직원·참여자가 취약계층에게 필요한 물품을 직접 만들어 기부하는 참여형 사회공헌입니다. 현장에서 함께하는 대면형(온앤온)과 원하는 곳에서 참여하는 비대면형(온팅) 중 선택할 수 있습니다.",
-      points: ["DIY 나눔 키트 기획·제작·배송", "대면(온앤온) · 비대면(온팅) 운영", "검수 후 복지기관 기부 전달"],
+      title: "원데이메이킹 (나눔 키트 제작)",
+      summary: "취약계층이 필요로 하는 물품을 선물 박스(Gift Box) 형태로 만들어 기부하는 참여형 사회공헌활동입니다. 활동 특성과 규모, 기업 스토리 등에 적합한 제안을 드립니다.",
+      points: ["DIY 나눔 키트 기획·제작·배송", "검수 후 복지기관 기부 전달", "나눔 전달 후기 공유"],
       color: "brand"
     },
     {
       id: "event",
       number: "02",
       label: "EVENT · CONSULTING",
-      title: "기업 행사 · 컨설팅 대행",
-      summary: "사회공헌 행사의 기획부터 현장 운영, 결과 보고까지 대신 맡아 진행합니다. 기업의 ESG 방향에 맞는 프로그램을 설계하고 소셜 임팩트 리포트로 성과를 정리해 드립니다.",
-      points: ["사전 수요조사 · 맞춤 프로그램 기획", "봉사 행사 현장 운영 · 촬영", "소셜 임팩트 리포트 · ESG 성과 정리"],
+      title: "기업 사회공헌 행사 컨설팅·대행",
+      summary: "사회공헌 행사의 기획부터 현장 운영, 결과 보고까지 원하시는 방향에 맞게 도움을 드립니다. 기업의 ESG 방향에 맞는 프로그램을 설계하고 소셜 임팩트 리포트로 성과를 정리해 드립니다.",
+      points: ["맞춤 프로그램 기획", "사회공헌 행사 현장 운영 · 촬영", "소셜 임팩트 공유 · 대외홍보"],
       color: "amber"
     }
   ],
@@ -105,12 +105,47 @@ export const mockData = {
     }
   ],
 
+  // '주요 사업 안내' > 나눔 키트 프로그램 구성 옵션 (BASIC 필수 + 옵션 A~D 선택 — 화면에서 토글해 문의 내용에 담김)
   programOptions: [
-    { option: "BASIC", type: "필수", badgeColor: "rose", content: "물품 제작 (참여자 1인당 기부 물품 1개 직접 제작 및 검수·기부)" },
-    { option: "옵션 A", type: "선택", badgeColor: "sky", content: "1 + 1 구성 (개인 소장용 물품 1개 추가 제작 → 1인당 총 2개씩 제작)" },
-    { option: "옵션 B", type: "선택", badgeColor: "sky", content: "기프트박스 포장용 추가 구성품 준비 (간식 꾸러미, 학용품, 건강용품 등)" },
-    { option: "옵션 C", type: "선택", badgeColor: "sky", content: "현장 사진·영상 촬영 및 스케치 영상 제작, YouTube 채널 및 SNS 공유" }
+    { option: "BASIC", type: "필수", title: "나눔 키트 제작", detail: "기부를 위한 나눔 키트 재료 1세트만 구성된 패키지" },
+    { option: "옵션 A", type: "선택", title: "1 + 1 구성", detail: "개인 소장용으로 재료 1세트 더 추가 구성" },
+    { option: "옵션 B", type: "선택", title: "선물세트 포장용 추가 구성품 준비", detail: "간식 꾸러미, 학용품, 건강용품 등" },
+    { option: "옵션 C", type: "선택", title: "현장 사진·영상 촬영 및 스케치 영상 제작", detail: "YouTube 채널 및 SNS 공유" },
+    { option: "옵션 D", type: "선택", title: "소셜 임팩트 리포트 제공", detail: "기부 성과 지표 정리 및 ESG 결과 보고서 제공" }
   ],
+
+  // '주요 사업 안내' > 4대 핵심 사회공헌 콘텐츠 (화면 노출용. icon 은 ProgramsSection 의 SVG 아이콘 키)
+  // ※ 아래 programs 는 맞춤 기획 추천(recommendData.programRules)이 id 로 참조하므로 따로 유지한다.
+  coreContents: [
+    {
+      id: "baking",
+      icon: "baking",
+      subtitle: "온기 가득 수제 나눔",
+      title: "사랑의 베이킹 클래스",
+      description: "취약계층 아동들과 함께 전문 파티시에 선생님의 제과·제빵 수업을 들으며 유의미한 시간을 보내는 활동입니다."
+    },
+    {
+      id: "science",
+      icon: "science",
+      subtitle: "미래세대 교육격차 해소",
+      title: "찾아가는 과학교실",
+      description: "취약계층 아동·청소년을 위한 창의 과학교실, IoT 키트 실습, 두뇌게임 등 임직원 멘토와 함께하는 참여형 교육 사회공헌을 운영합니다."
+    },
+    {
+      id: "space",
+      icon: "space",
+      subtitle: "복지시설 공간 개선·나눔",
+      title: "스페이스 업사이클링",
+      description: "복지관·노인요양센터의 노후 공간을 사용자 중심으로 리모델링하는 맞춤형 환경 개선 나눔사업입니다."
+    },
+    {
+      id: "esg",
+      icon: "esg",
+      subtitle: "지속 가능한 환경 보호 실천",
+      title: "친환경 ESG 프로젝트",
+      description: "도심·하천·마운틴 플로깅, 식목활동, 가드닝, EM 흙공 만들기 등 환경을 위한 사회공헌활동을 수행합니다."
+    }
+  ] as { id: string; icon: 'baking' | 'science' | 'space' | 'esg'; subtitle: string; title: string; description: string }[],
 
   programs: [
     {

@@ -28,7 +28,7 @@ openthe.kr 이 방문자에게서 수집하는 데이터의 **전체 목록**입
 | 이벤트 | 언제 발생 | 함께 기록되는 값 (props) | 코드 위치 |
 |---|---|---|---|
 | `page_view` | 첫 화면 진입, 메인↔포트폴리오 화면 전환 | — (경로·제목은 별도 컬럼) | `App.tsx` |
-| `inquiry_open` | 문의 모달을 열 때 | `source`: `header` / `hero` / `cta` / `portfolio_page` | `App.tsx` `openInquiry` |
+| `inquiry_open` | 문의 모달을 열 때 | `source`: `header` / `hero` / `cta` / `portfolio_page` / `programs`(사업 안내 구성 옵션) | `App.tsx` `openInquiry` |
 | `form_start` | 문의 폼에 **처음 입력**할 때 (폼당 1회) | `first_field`: 처음 건드린 항목 키 | `forms/InquiryForm.tsx` |
 | `generate_lead` | 문의 메일 발송 **성공** | `org_category`(기업/관공서/학교/기타), `program_type`(온앤온/온팅), `referral`(알게 된 경로, 미선택 시 `미선택`), `lead_id`(문의 식별번호) | `forms/InquiryForm.tsx` |
 | `inquiry_error` | 문의 메일 발송 실패 | `org_category`, `lead_id` | `forms/InquiryForm.tsx` |
