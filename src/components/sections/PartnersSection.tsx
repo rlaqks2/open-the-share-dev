@@ -77,44 +77,26 @@ const PartnersSection: React.FC = () => {
 
                 {/* 참여기관 로고 그리드 */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {displayedPartners.map((partner) => {
-                        const cardContent = (
-                            <>
-                                <div className="h-12 w-full flex items-center justify-center overflow-hidden mb-2 px-2">
-                                    <img
-                                        src={partner.logo}
-                                        alt={`${partner.name} 로고`}
-                                        loading="lazy"
-                                        className="max-h-11 max-w-[136px] w-auto h-auto object-contain group-hover:scale-105 transition-transform"
-                                    />
-                                </div>
-                                <span className="w-full text-center px-1 text-[11px] font-bold text-slate-600 group-hover:text-brand-700 truncate">
-                                    {partner.name}
-                                </span>
-                            </>
-                        );
-
-                        return partner.blogLink ? (
-                            <a
-                                key={partner.name}
-                                href={partner.blogLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-brand-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
-                                title={`${partner.name} 공식 블로그 소개 보기`}
-                            >
-                                {cardContent}
-                            </a>
-                        ) : (
-                            <div
-                                key={partner.name}
-                                className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-brand-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
-                                title={partner.name}
-                            >
-                                {cardContent}
+                    {/* 로고 카드는 외부 링크 없이 hover 강조만 한다 (partner.blogLink 데이터는 유지하되 연결하지 않음) */}
+                    {displayedPartners.map((partner) => (
+                        <div
+                            key={partner.name}
+                            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm hover:border-brand-400 hover:shadow-md transition-all flex flex-col items-center justify-center h-28 min-w-0 overflow-hidden"
+                            title={partner.name}
+                        >
+                            <div className="h-12 w-full flex items-center justify-center overflow-hidden mb-2 px-2">
+                                <img
+                                    src={partner.logo}
+                                    alt={`${partner.name} 로고`}
+                                    loading="lazy"
+                                    className="max-h-11 max-w-[136px] w-auto h-auto object-contain group-hover:scale-105 transition-transform"
+                                />
                             </div>
-                        );
-                    })}
+                            <span className="w-full text-center px-1 text-[11px] font-bold text-slate-600 group-hover:text-brand-700 truncate">
+                                {partner.name}
+                            </span>
+                        </div>
+                    ))}
                 </div>
 
                 {/* 더보기 / 접기 버튼 */}
