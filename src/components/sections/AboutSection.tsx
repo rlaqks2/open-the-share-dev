@@ -1,8 +1,7 @@
 /**
  * @file AboutSection.tsx
  * @description openthe.kr의 '회사소개(About Us)' 실제 콘텐츠를 반영한 섹션입니다.
- * - 철학("평범함 속 위대함의 가치" & 더글러스 맥아더 명언)
- * - 미션 & 비전
+ * (상단 인사말·철학 명언·미션/비전 블록은 2026-11-24 제거, 문구는 mockData.about 에 남아 있음)
  * - 핵심가치 O.P.E.N (Opportunity, Prosperity, Equality, Neighborhood)
  * - 오픈더쉐어의 3대 가치(Value) 및 기업 담당자 맞춤 솔루션
  * - 브랜드 스토리 (구 CI 소개, openthe.kr 원본 ci.png 적용)
@@ -17,75 +16,7 @@ const AboutSection: React.FC = () => {
     return (
         <section id="about" className="py-24 bg-white">
             <div className="max-w-7xl mx-auto px-4 space-y-20">
-                {/* 1. 메인 인사말 & 철학 */}
-                <div className="grid lg:grid-cols-12 gap-12 items-center">
-                    <div className="lg:col-span-7 min-w-0">
-                        <span className="inline-block px-3.5 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-extrabold mb-3">
-                            ABOUT OPEN THE SHARE
-                        </span>
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 tracking-tight leading-snug break-keep">
-                            {about.title}
-                        </h2>
-                        <p className="text-lg font-bold text-brand-700 mb-6 break-keep">
-                            “{about.subtitle}”
-                        </p>
-                        <p className="text-slate-600 leading-relaxed mb-8 whitespace-pre-line text-base break-keep">
-                            {about.description}
-                        </p>
-
-                        {/* 3대 핵심 밸류 포인트 */}
-                        <div className="grid sm:grid-cols-3 gap-4">
-                            {about.features.map((feature) => (
-                                <div
-                                    key={feature.title}
-                                    className="p-5 rounded-2xl bg-[#F6FAFD] border border-brand-100/80 min-w-0"
-                                >
-                                    <div className="text-2xl mb-2">{feature.icon}</div>
-                                    <h3 className="font-extrabold text-slate-900 text-sm mb-1.5 break-keep">
-                                        {feature.title}
-                                    </h3>
-                                    <p className="text-xs text-slate-500 leading-relaxed break-keep">
-                                        {feature.description}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* 우측 명언 & 미션/비전 카드 */}
-                    <div className="lg:col-span-5 space-y-5 min-w-0">
-                        <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-lg relative overflow-hidden">
-                            <div className="text-brand-400 text-xs font-extrabold uppercase tracking-widest mb-3">
-                                OUR PHILOSOPHY
-                            </div>
-                            <blockquote className="text-base md:text-lg font-bold leading-relaxed mb-4 text-slate-100 break-keep">
-                                “{about.quote.text}”
-                            </blockquote>
-                            <cite className="text-xs text-brand-300 not-italic font-semibold block break-keep">
-                                — {about.quote.author}
-                            </cite>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="p-6 rounded-3xl bg-brand-600 text-white">
-                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-brand-200">
-                                    MISSION
-                                </span>
-                                <h3 className="text-base font-black mt-1 mb-2">미션</h3>
-                                <p className="text-xs text-brand-50 leading-relaxed break-keep">{about.mission}</p>
-                            </div>
-                            <div className="p-6 rounded-3xl bg-amber-500 text-white">
-                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-100">
-                                    VISION
-                                </span>
-                                <h3 className="text-base font-black mt-1 mb-2">비전</h3>
-                                <p className="text-xs text-amber-50 leading-relaxed break-keep">{about.vision}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 2. 핵심가치 O.P.E.N */}
+                {/* 1. 핵심가치 O.P.E.N */}
                 <div className="bg-[#F6FAFD] rounded-3xl p-8 md:p-12 border border-slate-200/70">
                     <div className="text-center max-w-2xl mx-auto mb-10">
                         <span className="text-xs font-extrabold text-brand-600 uppercase tracking-widest">
@@ -120,7 +51,7 @@ const AboutSection: React.FC = () => {
                     </div>
                 </div>
 
-                {/* 3. 기업 담당자의 고민 해결 & 브랜드 스토리 */}
+                {/* 2. 기업 담당자의 고민 해결 & 브랜드 스토리 */}
                 <div className="grid lg:grid-cols-12 gap-8 items-stretch">
                     {/* 이런 고민을 가진 파트너와 함께합니다 */}
                     <div className="lg:col-span-7 bg-white rounded-3xl p-7 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
