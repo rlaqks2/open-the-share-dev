@@ -16,15 +16,6 @@ interface PortfolioSectionProps {
 
 const isOTSItem = (item: PortfolioItem) => item.period >= '2025.01.01';
 
-const getOrgBadgeStyle = (item: PortfolioItem) => {
-    if (isOTSItem(item)) {
-        return 'bg-brand-600 text-white';
-    }
-    return item.orgType === '기업봉사'
-        ? 'bg-brand-800 text-white'
-        : 'bg-amber-500 text-white';
-};
-
 const getCategoryPillStyle = (category: string) => {
     switch (category) {
         case '친환경 ESG':
@@ -146,16 +137,8 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
                                 {/* 좌측 상단 구분 배지 */}
                                 <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5 pr-3">
-                                    {isOTSItem(item) && (
-                                        <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-brand-600 text-white shadow-sm whitespace-nowrap">
-                                            OPEN THE SHARE
-                                        </span>
-                                    )}
-                                    <span
-                                        className={`px-3 py-1 rounded-full text-xs font-extrabold shadow-sm whitespace-nowrap ${getOrgBadgeStyle(
-                                            item
-                                        )}`}
-                                    >
+                                    {/* 봉사 구분 배지: 회사소개 '비전' 카드와 같은 주황(amber-500)으로 강조 */}
+                                    <span className="px-3 py-1 rounded-full text-xs font-extrabold shadow-sm whitespace-nowrap bg-amber-500 text-white">
                                         {item.orgType}
                                     </span>
                                 </div>

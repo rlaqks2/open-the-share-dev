@@ -395,20 +395,10 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                                     />
                                     {/* 상단 배지 오버레이 */}
                                     <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5 pr-3">
-                                        <span
-                                            className={`text-xs font-extrabold px-3 py-1 rounded-full shadow-sm backdrop-blur-md whitespace-nowrap ${
-                                                item.orgType === '기업봉사'
-                                                    ? 'bg-brand-600/95 text-white'
-                                                    : 'bg-amber-500/95 text-white'
-                                            }`}
-                                        >
+                                        {/* 봉사 구분 배지: 회사소개 '비전' 카드와 같은 주황(amber-500)으로 강조 */}
+                                        <span className="text-xs font-extrabold px-3 py-1 rounded-full shadow-sm bg-amber-500 text-white whitespace-nowrap">
                                             {item.orgType}
                                         </span>
-                                        {isOTSItem(item) && (
-                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-400/95 text-brand-950 shadow-sm whitespace-nowrap">
-                                                OPEN THE SHARE
-                                            </span>
-                                        )}
                                     </div>
                                     {/* 사진 개수 표시 */}
                                     {item.galleryUrls && item.galleryUrls.length > 1 && (
