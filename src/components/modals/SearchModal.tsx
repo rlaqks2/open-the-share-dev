@@ -32,6 +32,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
     onOpenPortfolioPage,
 }) => {
     const [query, setQuery] = useState('');
+    const panelRef = useRef<HTMLDivElement>(null);
+    const pressStartedOutside = useRef(false);
 
     // ESC 키로 닫기 + 배경 스크롤 잠금
     useEffect(() => {
@@ -76,15 +78,22 @@ const SearchModal: React.FC<SearchModalProps> = ({
     return (
         <div
             className="fixed inset-0 z-50 animate-modalFadeIn"
-            onClick={onClose}
+            // 바깥에서 누르고 바깥에서 뗐을 때만 닫기 (검색창 안에서 드래그하다 바깥에서 떼도 닫히지 않게)
+            onMouseDown={(e) => {
+                pressStartedOutside.current = !panelRef.current?.contains(e.target as Node);
+            }}
+            onClick={(e) => {
+                if (pressStartedOutside.current && !panelRef.current?.contains(e.target as Node)) onClose();
+                pressStartedOutside.current = false;
+            }}
             role="dialog"
             aria-modal="true"
             aria-label="포트폴리오 검색창"
         >
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             <div
+                ref={panelRef}
                 className="relative bg-white pt-6 pb-8 shadow-xl animate-slideDown border-b border-slate-200"
-                onClick={(e) => e.stopPropagation()}
             >
                 <div className="max-w-3xl mx-auto px-4">
                     <div className="flex items-center justify-between mb-3">

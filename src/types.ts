@@ -24,7 +24,7 @@ export interface PortfolioItem {
   partner: string;              // 협력 파트너사/단체 이름
   period: string;               // 블로그 게시일 (YYYY.MM.DD) — 화면 표기 '게시일'
   year?: string;                // 진행 연도
-  participants: number;         // 참여 인원 수
+  participants: number;         // 참여 인원 수 (0 = 미확인 → 상세 화면에 인원 미표시)
   tags?: string[];              // 해시태그 목록 (카카오 같이가치 / 해피빈 스타일)
   story: string;                // 프로젝트 상세 스토리
   blogLink?: string;            // 관련 네이버 블로그 원문 링크

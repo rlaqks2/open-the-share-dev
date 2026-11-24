@@ -53,7 +53,7 @@ const copyText = async (text: string): Promise<boolean> => {
 /**
  * 비슷한 사례 3건: 같은 프로그램(category) → 같은 참여 유형(기업/단체) 우선 → 최신순.
  * 담당자가 "우리와 비슷한 곳은 어떻게 했나"를 바로 이어서 볼 수 있게 한다.
- * (참여 인원은 블로그 자동 수집 시 기본값 30 이 들어가는 경우가 많아 기준에서 제외)
+ * (참여 인원은 자동 수집 항목이 미확인(0)이거나 예전 기본값(30·40)인 경우가 많아 기준에서 제외)
  */
 const findSimilarItems = (item: PortfolioItem, limit = 3): PortfolioItem[] =>
     mockData.portfolioItems
@@ -84,8 +84,6 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
         trackEvent('portfolio_share', { item_id: String(item.id), category: item.category });
     };
 
-    if (!item) return null;
-
     // 이미지 중복 및 공통 푸터 배너 필터링 (고유한 활동 사진만 유지)
     const images = React.useMemo(() => {
         if (!item) return [];
@@ -111,6 +109,10 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
         }
         return filtered.length > 0 ? filtered : [item.imageUrl];
     }, [item]);
+
+    // Hook(useState/useEffect/useMemo)은 모두 이 위에서 호출해야 한다 (조건부 return 이 Hook 보다 앞서면 React 오류)
+    if (!item) return null;
+
     const currentImage = images[activeImageIndex] || item.imageUrl;
     const similarItems = findSimilarItems(item);
 
@@ -253,9 +255,13 @@ const PortfolioDetailModal: React.FC<PortfolioDetailModalProps> = ({ item, onClo
                                     </span>
                                 </div>
                                 <div className="bg-white p-4 rounded-xl border border-slate-100 min-w-0">
-                                    <span className="block text-xs font-semibold text-slate-400 mb-1">활동 구분 · 규모</span>
+                                    <span className="block text-xs font-semibold text-slate-400 mb-1">
+                                        {item.participants > 0 ? '활동 구분 · 규모' : '활동 구분'}
+                                    </span>
                                     <span className="font-extrabold text-brand-700 text-sm sm:text-base break-keep block">
-                                        {item.orgType} (약 {item.participants}명 참여)
+                                        {/* participants 0 = 인원 미확인(블로그 자동 수집 기본값) → 숫자를 지어내 보여주지 않음 */}
+                                        {item.orgType}
+                                        {item.participants > 0 && ` (약 ${item.participants}명 참여)`}
                                     </span>
                                 </div>
                             </div>

@@ -64,7 +64,7 @@ npx supabase db push
 npx supabase functions deploy collect
 ```
 - `db push` 가 `supabase/migrations/*.sql` 을 적용합니다 (테이블·뷰·RLS·pg_cron 1년 파기).
-- `collect` 는 `supabase/config.toml` 에 따라 **JWT 검증 없이** 배포됩니다 (브라우저 sendBeacon 은 인증 헤더를 못 보냄). 함수 안에서 Origin 허용목록·이벤트명·크기를 검증합니다.
+- `collect` 는 `supabase/config.toml` 에 따라 **JWT 검증 없이** 배포됩니다 (브라우저 sendBeacon 은 인증 헤더를 못 보냄). 함수 안에서 Origin 허용목록·이벤트명·크기를 검증하고, **같은 IP(없으면 세션)에서 1분에 120건 이상이면 저장하지 않습니다**(429, `RATE_LIMIT_PER_MIN`).
 - 허용 Origin 을 바꾸려면: `npx supabase secrets set ALLOWED_ORIGINS="https://openthe.kr,https://www.openthe.kr"` (기본값과 동일)
 
 > **현재 운영 값 (2026-11-09 설정 완료)**: 조직 `OpenTheShare`(Free), 프로젝트 `openthe-kr-analytics`
@@ -163,7 +163,7 @@ create policy analytics_reader_select on public.ip_lookups  for select to analyt
 | 삭제 요청 대응 | `delete from site_events where ip = '<IP>' or session_id = '<ID>';` + 같은 IP 의 `ip_lookups` 삭제 |
 | 무료 플랜 일시 중지 | 1주간 활동 없으면 중지됨. 매일 방문이 있으면 보통 문제없음 |
 | 백업 | 무료 플랜은 자동 백업 없음 → 필요해지면 주 1회 `pg_dump` (GitHub Actions + 비공개 저장소) 또는 Pro 전환 |
-| 스팸 의심 | 함수 URL 은 공개값이고 Origin 헤더는 브라우저 밖에서 위조 가능. 이상 유입 시 해당 IP 행 삭제, 계속되면 함수를 새 이름(`collect_v2`)으로 배포하고 Variables 교체 |
+| 스팸 의심 | 함수 URL 은 공개값이고 Origin 헤더는 브라우저 밖에서 위조 가능. IP당 분당 120건 제한이 1차 방어선. 이상 유입 시 해당 IP 행 삭제, 계속되면 함수를 새 이름(`collect_v2`)으로 배포하고 Variables 교체 |
 | 구글 시트 로그 종료 | Postgres 수집이 1~2주 안정적이면 GitHub Variables `VITE_GOOGLE_SHEET_WEBHOOK_URL` 삭제 → 재배포 → 처리방침에서 Google Sheets·브라우저 ipapi/ipify 항목 정리 |
 | 비영리 승인 후 | GA4·GCP·Looker Studio 소유권을 Workspace 계정으로 이전, Ad Grants 를 GA4 에 연결 (`generate_lead` 전환 가져오기) |
 

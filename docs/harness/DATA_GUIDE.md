@@ -46,7 +46,7 @@
       partner: "○○기업",                         // 화면에 표시될 참여기관명
       period: "2026.11.03",                      // ★ 반드시 YYYY.MM.DD — 블로그 게시일 (화면 표기 '게시일')
       year: "2026",                              // period 의 연도와 동일
-      participants: 72,                          // 숫자. 모르면 30
+      participants: 72,                          // 숫자. 모르면 0 (상세 화면에 인원 미표시)
       imageUrl: `${BASE_URL}images/portfolio/item_111.jpg`,   // 로컬 썸네일 (핫링크 금지)
       galleryUrls: [`${BASE_URL}images/portfolio/item_111.jpg`, "https://postfiles.pstatic.net/...?type=w800"],
       tags: ["기업봉사", "스페이스 업사이클링", "친환경·업사이클링"],   // # 없이 작성 (화면에서 # 붙임)
@@ -65,7 +65,7 @@
 ### 블로그 자동 수집 (`scripts/sync_blog.py`)
 - GitHub Actions 가 **매시간** RSS(최근 글 약 50개)를 확인 → 새 `logNo` 이면서 블로그 카테고리가 **`현장스케치`(기업 및 단체봉사 > 현장스케치)** 인 글만 추가 (칼럼·나눔전달후기·파트너 기업 소개 등은 제외)
 - `story` 는 og:description 을 90자 이내로 자동 요약 → 문장이 어색하면 운영자가 1~2문장으로 다듬기
-- 자동 추론값(`orgType`, `category`, `partner`, `participants: 30`)은 **정확하지 않을 수 있음** → 운영자가 주기적으로 검수·수정 권장
+- 자동 추론값(`orgType`, `category`, `partner`, `participants: 0`=미확인)은 **정확하지 않을 수 있음**. 2026-11 이전 자동 수집분의 `participants: 30`·`40` 도 대부분 기본값이라 검수 필요 → 운영자가 주기적으로 검수·수정 권장
 - 이미 있는 `logNo` 는 다시 추가하지 않으므로, 수동으로 고친 내용은 덮어써지지 않습니다.
 - 자동 수집을 막고 싶은 글: 해당 `logNo` 로 항목을 하나 만들어 두거나, 블로그에서 카테고리를 현장스케치가 아닌 곳으로 옮기기
 

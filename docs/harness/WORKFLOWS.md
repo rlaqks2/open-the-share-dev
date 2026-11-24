@@ -18,7 +18,7 @@
   1. 썸네일을 규격([DATA_GUIDE](DATA_GUIDE.md) 5장)에 맞춰 `public/images/portfolio/item_NNN.jpg` 로 저장
   2. `portfolioItems` 배열 안(마커 사이)에 3장 형식으로 항목 추가. `id` = 현재 최대값+1
   3. `category` 는 5개 허용값 중 하나, `period` 는 `YYYY.MM.DD`
-- **자동 수집된 항목 검수**: `participants: 30`, `partner: "OPEN THE SHARE"`, `orgType` 오분류가 흔함 → 블로그 원문 보고 교정
+- **자동 수집된 항목 검수**: `participants: 0`(미확인, 예전 기본값 30·40), `partner: "OPEN THE SHARE"`, `orgType` 오분류가 흔함 → 블로그 원문 보고 교정
 
 ## W3. 참여기관 로고 추가 (난이도 ★)
 

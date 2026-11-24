@@ -11,6 +11,13 @@ echo.
 
 set "PATH=%LOCALAPPDATA%\Programs\nodejs;%LOCALAPPDATA%\Programs\Git\cmd;%PATH%"
 
+REM origin 이 운영 저장소가 아니면 중단 (테스트 저장소 clone 에서 실수로 실행 방지)
+node scripts\check-prod-remote.mjs
+if %ERRORLEVEL% NEQ 0 (
+    pause
+    exit /b 1
+)
+
 echo [1/3] 최신 소스 동기화 (git pull --rebase --autostash)...
 git pull --rebase --autostash origin master
 if %ERRORLEVEL% NEQ 0 (

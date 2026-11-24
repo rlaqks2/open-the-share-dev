@@ -466,7 +466,7 @@ def main():
       partner: {json.dumps(clean_text(partner), ensure_ascii=False)},
       period: {json.dumps(period, ensure_ascii=False)},
       year: {json.dumps(year, ensure_ascii=False)},
-      participants: 30,
+      participants: 0, // 0 = 인원 미확인 (화면에 표시 안 함). 블로그 원문 확인 후 실제 인원으로 수정
       imageUrl: `${{BASE_URL}}images/portfolio/{local_filename}`,
       galleryUrls: [{', '.join(gal_urls)}],
       tags: [{json.dumps(org_type, ensure_ascii=False)}, {json.dumps(cat, ensure_ascii=False)}, "사회공헌·나눔"],

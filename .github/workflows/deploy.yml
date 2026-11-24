@@ -12,10 +12,9 @@ on:
       - master
   workflow_dispatch:
 
+# gh-pages 브랜치에 push 하는 방식이라 contents: write 만 필요 (pages/id-token 은 Pages Actions 배포용이라 불필요)
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -64,7 +63,7 @@ jobs:
       # PR 에서는 빌드 검사만 하고 배포하지 않습니다.
       - name: Deploy to gh-pages branch
         if: github.event_name != 'pull_request'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist

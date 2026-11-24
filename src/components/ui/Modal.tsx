@@ -8,7 +8,7 @@
  * - 배경을 클릭하거나 키보드의 'Escape' 키를 누르면 모달이 닫힙니다.
  * - `maxWidth`, `noPadding` 등의 옵션을 통해 유연하게 스타일을 조절할 수 있습니다.
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // Modal 컴포넌트가 받는 props들의 타입을 정의
 interface ModalProps {
@@ -26,6 +26,10 @@ const Modal: React.FC<ModalProps> = ({
     maxWidth = 'max-w-lg', // 기본 최대 너비 설정
     noPadding = false
 }) => {
+    // 배경 위에서 '누르고 떼었을 때'만 닫는다. 모달 안에서 드래그(글자 선택 등)하다 바깥에서 손을 떼면
+    // click 이벤트가 공통 부모(배경)에서 발생해 모달이 닫히고 작성 중인 문의가 사라지는 문제 방지.
+    const pressStartedOnBackdrop = useRef(false);
+
     // useEffect를 사용하여 모달의 열림/닫힘 상태에 따른 부수 효과(side effect)를 관리
     useEffect(() => {
         // 키보드 이벤트 핸들러
@@ -56,16 +60,23 @@ const Modal: React.FC<ModalProps> = ({
     return (
         // role, aria-* 속성을 사용하여 웹 접근성을 준수
         <div className="fixed inset-0 z-50 animate-modalFadeIn" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            {/* 반투명 배경. 클릭 시 onClose 함수 호출 */}
-            <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+            {/* 반투명 배경 */}
+            <div className="absolute inset-0 bg-black/60" />
             {/* 모바일 등 화면보다 콘텐츠가 길 때도 스크롤로 끝까지 볼 수 있도록 overflow-y-auto + max-h 적용 */}
-            <div className="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
+            <div
+                className="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto"
+                onMouseDown={(e) => {
+                    pressStartedOnBackdrop.current = e.target === e.currentTarget;
+                }}
+                onClick={(e) => {
+                    if (pressStartedOnBackdrop.current && e.target === e.currentTarget) onClose();
+                    pressStartedOnBackdrop.current = false;
+                }}
+            >
                 <div
                     // 전달받은 props에 따라 동적으로 클래스 적용
                     className={`relative w-full ${maxWidth} max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl bg-white shadow-xl ${noPadding ? '' : 'p-6'}`}
                     role="document"
-                    // 모달 콘텐츠 영역 클릭 시 이벤트가 배경으로 전파되는 것을 막음(이벤트 버블링 방지)
-                    onClick={(e) => e.stopPropagation()}
                 >
                     {children}
                 </div>

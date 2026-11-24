@@ -3,7 +3,7 @@
  * openthe.kr 브라우저(src/services/analytics.ts)가 보내는 방문·행동 이벤트를 검증해 public.site_events 에 저장합니다.
  *
  * - 브라우저는 sendBeacon(text/plain) 으로 보내므로 JWT 가 없습니다 → supabase/config.toml 에서 verify_jwt = false
- *   대신 Origin 허용목록 + site 식별값 + 이벤트명 허용목록 + 크기·길이 제한으로 거릅니다.
+ *   대신 Origin 허용목록 + site 식별값 + 이벤트명 허용목록 + 크기·길이 제한 + IP당 분당 요청 제한으로 거릅니다.
  * - IP 는 브라우저가 보낸 값을 쓰지 않고 요청 헤더에서 직접 판별합니다.
  * - 지역·기관 조회(ipapi.co)는 세션 첫 페이지뷰에서만, 캐시(ip_lookups)에 없거나 30일 지난 IP 만 합니다.
  * - 응답 내용은 브라우저가 읽지 않습니다(no-cors/beacon). 실패해도 사이트에는 영향 없음.
@@ -17,6 +17,13 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 const SITE_ID = 'openthe.kr';
 const MAX_BODY_BYTES = 8 * 1024;
 const LOOKUP_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+/**
+ * 요청 제한: 같은 IP(없으면 세션)에서 최근 1분간 저장된 이벤트가 이 값 이상이면 더 저장하지 않는다.
+ * Origin 헤더는 브라우저가 아닌 클라이언트가 위조할 수 있으므로, DB 를 채우는 반복 요청을 막는 실제 방어선.
+ * 회사 사내망처럼 여러 명이 IP 하나를 공유하는 경우(예: 교육 중 40명 동시 접속)를 고려해 넉넉히 둔다.
+ */
+const RATE_LIMIT_PER_MIN = 120;
 
 /** src/services/analytics.ts 의 AnalyticsEventName + page_view 와 일치해야 합니다. */
 const ALLOWED_EVENTS = new Set([
@@ -149,6 +156,16 @@ Deno.serve(async (req) => {
   if (isBot) return new Response('ignored', { status: 202, headers });
 
   const ip = clientIp(req);
+
+  // 요청 제한 (site_events_ip_idx / site_events_session_idx 사용). 조회 실패 시에는 막지 않고 저장한다.
+  const since = new Date(Date.now() - 60_000).toISOString();
+  const recent = ip
+    ? supabase.from('site_events').select('id', { count: 'exact', head: true }).eq('ip', ip).gte('occurred_at', since)
+    : supabase.from('site_events').select('id', { count: 'exact', head: true }).eq('session_id', sessionId).gte('occurred_at', since);
+  const { count: recentCount } = await recent;
+  if ((recentCount ?? 0) >= RATE_LIMIT_PER_MIN) {
+    return new Response('rate limited', { status: 429, headers });
+  }
 
   const { error } = await supabase.from('site_events').insert({
     session_id: sessionId,

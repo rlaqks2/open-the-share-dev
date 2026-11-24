@@ -15,6 +15,8 @@ interface PortfolioPageProps {
     onBackToHome: () => void;
     onInquiryClick: () => void;
     initialFilter?: string;
+    /** 진입 시 검색어 (헤더 검색창의 '전체 결과 보기') */
+    initialQuery?: string;
 }
 
 const ORG_TABS = [
@@ -40,11 +42,12 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
     onBackToHome,
     onInquiryClick,
     initialFilter = 'all',
+    initialQuery = '',
 }) => {
     const [orgFilter, setOrgFilter] = useState<string>(initialFilter);
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [yearFilter, setYearFilter] = useState<string>('all');
-    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState<string>(initialQuery);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
@@ -57,9 +60,11 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
     }, [orgFilter, categoryFilter, yearFilter, searchQuery, itemsPerPage]);
 
     const isOTSItem = (item: PortfolioItem) => item.period >= '2025.01.01';
+    // 연도 목록과 필터가 같은 기준을 쓰도록 (year 가 없으면 게시일 앞 4자리)
+    const itemYear = (item: PortfolioItem) => item.year || item.period.slice(0, 4);
 
     const availableYears = useMemo(() => {
-        const yearsSet = new Set<string>(mockData.portfolioItems.map((item) => item.year || item.period.slice(0, 4)));
+        const yearsSet = new Set<string>(mockData.portfolioItems.map(itemYear));
         return Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
     }, []);
 
@@ -88,7 +93,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 return false;
             }
 
-            if (yearFilter !== 'all' && item.year !== yearFilter) {
+            if (yearFilter !== 'all' && itemYear(item) !== yearFilter) {
                 return false;
             }
 
@@ -98,7 +103,9 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 const matchPartner = item.partner.toLowerCase().includes(q);
                 const matchCategory = item.category.toLowerCase().includes(q);
                 const matchStory = item.story.toLowerCase().includes(q);
-                return matchTitle || matchPartner || matchCategory || matchStory;
+                // 검색창(SearchModal)과 같은 기준: 참여 유형('기업봉사'/'단체봉사')도 검색
+                const matchOrgType = item.orgType.toLowerCase().includes(q);
+                return matchTitle || matchPartner || matchCategory || matchStory || matchOrgType;
             }
 
             return true;

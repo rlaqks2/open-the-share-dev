@@ -223,7 +223,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 <div className="mt-14 text-center">
                     <button
                         onClick={() => onViewAllClick(activeTab)}
-                        className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white border-2 border-slate-900 text-slate-900 font-extrabold hover:bg-slate-900 hover:text-white transition-all shadow-sm hover:shadow-md text-sm md:text-base whitespace-nowrap"
+                        className="inline-flex max-w-full items-center gap-2 sm:gap-3 px-5 sm:px-8 py-4 rounded-full bg-white border-2 border-slate-900 text-slate-900 font-extrabold hover:bg-slate-900 hover:text-white transition-all shadow-sm hover:shadow-md text-sm md:text-base break-keep"
                     >
                         <span>참여기관 사회공헌 전체 포트폴리오 둘러보기 ({totalCount}건)</span>
                         <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

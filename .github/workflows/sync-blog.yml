@@ -7,10 +7,9 @@ on:
   # GitHub 웹 브라우저에서 언제든 'Run workflow' 버튼으로 즉시 수동 실행도 가능
   workflow_dispatch:
 
+# gh-pages 브랜치에 push 하는 방식이라 contents: write 만 필요 (pages/id-token 은 Pages Actions 배포용이라 불필요)
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -52,16 +51,17 @@ jobs:
             echo "No new blog posts. Skipping build and deploy."
           fi
 
-      - name: Commit and push changes
+      # 순서: 커밋 → 최신 master 위로 rebase → 빌드 검사 → (통과 시에만) push → 배포
+      # 예전에는 push 를 먼저 해서, 자동 생성 데이터로 빌드가 깨지면 master 가 깨진 채 남았다.
+      - name: Commit changes (local only)
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add public/images/portfolio/ src/data/mockData.ts
           git commit -m "chore(auto-sync): update portfolio with new blog posts [skip ci]"
-          # 사람이 그 사이 push 한 커밋이 있어도 실패하지 않도록 rebase 후 push
+          # 사람이 그 사이 push 한 커밋이 있어도 그 위에서 빌드·push 하도록 rebase
           git pull --rebase origin master
-          git push origin master
 
       - name: Setup Node.js
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -83,9 +83,14 @@ jobs:
           VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
           VITE_ANALYTICS_COLLECT_URL: ${{ vars.VITE_ANALYTICS_COLLECT_URL }}
 
+      # 빌드가 실패하면 여기까지 오지 않으므로 깨진 데이터가 master 에 올라가지 않는다.
+      - name: Push to master
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: git push origin master
+
       - name: Deploy to GitHub Pages (gh-pages)
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist

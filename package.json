@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "sync:blog": "python scripts/sync_blog.py",
-    "ship": "git pull --rebase --autostash origin master && npm run build && git add -A && git commit -m \"update site\" && git push origin master",
+    "ship": "node scripts/check-prod-remote.mjs && git pull --rebase --autostash origin master && npm run build && git add -A && git commit -m \"update site\" && git push origin master",
     "ship:dev": "npm run build && git push --force https://github.com/rlaqks2/open-the-share-dev.git HEAD:main",
     "deploy": "npm run ship",
     "deploy:manual": "npm run build && gh-pages -d dist"

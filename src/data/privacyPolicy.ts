@@ -16,6 +16,8 @@ const { companyInfo } = mockData;
  */
 const GA_ENABLED = Boolean((import.meta.env.VITE_GA_MEASUREMENT_ID || '').trim());
 const DB_ENABLED = Boolean((import.meta.env.VITE_ANALYTICS_COLLECT_URL || '').trim());
+/** 구글 시트 방문자 로그 (src/utils/visitorTracker.ts — 브라우저에서 ipapi.co·ipify 로 IP 조회) */
+const SHEET_ENABLED = Boolean((import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL || '').trim());
 const BEHAVIOR_ENABLED = GA_ENABLED || DB_ENABLED;
 
 export interface PolicySection {
@@ -92,14 +94,19 @@ export const privacyPolicy = {
                 head: ['수탁자(서비스)', '위탁 업무', '이전 항목', '이전 국가·방법'],
                 rows: [
                     ['EmailJS', '문의 내용의 이메일 발송', '문의 폼 입력 항목 전체', '해외 서버 / 문의 제출 시 네트워크 전송'],
-                    ['Google LLC (Google Sheets)', '방문 기록 저장', '방문 기록 항목', '미국 등 / 페이지 방문 시 네트워크 전송'],
+                    ...(SHEET_ENABLED
+                        ? [['Google LLC (Google Sheets)', '방문 기록 저장', '방문 기록 항목', '미국 등 / 페이지 방문 시 네트워크 전송']]
+                        : []),
                     ...(GA_ENABLED
                         ? [['Google LLC (Google Analytics)', '웹사이트 이용 통계 분석', '방문 기록·이용 행태 항목 (IP 주소는 Google 이 저장하지 않음)', '미국 등 / 페이지 이용 시 네트워크 전송']]
                         : []),
                     ...(DB_ENABLED
                         ? [['Supabase Inc.', '방문 기록·이용 행태 저장 (데이터베이스)', '방문 기록·이용 행태 항목', '대한민국(서울 리전) 서버 / 페이지 이용 시 네트워크 전송']]
                         : []),
-                    ['ipapi.co, ipify', 'IP 기반 접속 지역 조회', 'IP 주소', '해외 서버 / 페이지 방문 시 네트워크 전송'],
+                    // ipapi.co: 시트 로그(브라우저)와 Supabase 수집기(서버) 모두 사용 / ipify: 시트 로그의 예비 조회에서만 사용
+                    ...(SHEET_ENABLED || DB_ENABLED
+                        ? [[SHEET_ENABLED ? 'ipapi.co, ipify' : 'ipapi.co', 'IP 기반 접속 지역 조회', 'IP 주소', '해외 서버 / 페이지 방문 시 네트워크 전송']]
+                        : []),
                 ],
             },
         },

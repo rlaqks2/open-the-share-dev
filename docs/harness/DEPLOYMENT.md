@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     DEV["로컬 수정"] -->|"deploy.bat 또는 npm run ship<br/>(pull → build 검사 → commit → push)"| M["master"]
-    BOT["sync-blog.yml<br/>(매시간)"] -->|"[skip ci] 커밋"| M
+    BOT["sync-blog.yml<br/>(매시간)"] -->|"[skip ci] 커밋<br/>(빌드 통과 후에만 push)"| M
     M -->|"push 트리거"| D["deploy.yml<br/>npm ci → npm run build"]
     D -->|"peaceiris/actions-gh-pages<br/>cname: openthe.kr"| G["gh-pages 브랜치"]
     BOT -->|"새 글 있을 때 직접 빌드·배포"| G
@@ -13,7 +13,7 @@ flowchart LR
 ```
 
 - **공식 경로는 `master` push 하나**입니다. Actions 가 깨끗한 환경(`npm ci`)에서 빌드하므로 "내 PC에선 됐는데" 문제가 없습니다.
-- 블로그 동기화 봇은 `[skip ci]` 로 커밋하여 deploy.yml 중복 실행을 막고, 대신 자기 잡에서 직접 배포합니다.
+- 블로그 동기화 봇은 `[skip ci]` 로 커밋하여 deploy.yml 중복 실행을 막고, 대신 자기 잡에서 직접 배포합니다. 순서는 커밋 → rebase → **빌드 검사 → 통과 시에만 push** → 배포라서, 자동 생성 데이터로 빌드가 깨져도 master 는 깨지지 않습니다.
 - 두 워크플로는 `concurrency: pages` 그룹을 공유해 동시에 배포되지 않습니다.
 - PR 을 열면 deploy.yml 이 **빌드 검사만** 하고 배포하지 않습니다.
 
@@ -52,6 +52,8 @@ git push origin master
 | GitHub → Actions → Deploy → Run workflow | 코드 변경 없이 재배포 |
 
 배포 후 확인: GitHub 저장소 **Actions** 탭 초록불 → 1~3분 뒤 https://openthe.kr 에서 `Ctrl+F5`.
+
+`deploy.bat`·`npm run ship` 은 먼저 `scripts/check-prod-remote.mjs` 로 **origin 이 운영 저장소(`rlaqks2/open-the-share-website`)인지 확인**하고, 아니면 중단합니다. 테스트 저장소(open-the-share-dev)를 clone 한 폴더에서 실수로 실행해 테스트 저장소 master 에 올라가는 것을 막기 위함입니다. 테스트 사이트는 `npm run ship:dev` 를 쓰세요.
 
 ⚠️ `git add -A` 는 작업 폴더의 모든 변경을 올립니다. 개인 메모·테스트 파일이 있으면 먼저 정리하세요.
 

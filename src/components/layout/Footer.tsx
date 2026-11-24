@@ -206,12 +206,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigateHome, onNavigatePortfolio, on
                             {companyInfo.email}
                         </p>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-slate-500 whitespace-nowrap shrink-0">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 md:shrink-0">
                         {onOpenPrivacy && (
                             <button
                                 type="button"
                                 onClick={onOpenPrivacy}
-                                className="font-bold text-slate-200 hover:text-white underline-offset-4 hover:underline transition-colors"
+                                className="font-bold text-slate-200 hover:text-white underline-offset-4 hover:underline transition-colors whitespace-nowrap"
                             >
                                 개인정보처리방침
                             </button>

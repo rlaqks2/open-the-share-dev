@@ -43,10 +43,14 @@ function App() {
 
     // 현재 화면 뷰 상태 ('home' 메인 페이지 | 'portfolio' 전용 페이지네이션 페이지)
     const [currentView, setCurrentView] = useState<'home' | 'portfolio'>('home');
-    // 헤더에서 현재 선택된 섹션 ID (선택했을 때만 초록색 활성화)
+    // 헤더에서 현재 선택된 섹션 ID (선택했을 때만 brand 블루로 활성화)
     const [activeSection, setActiveSection] = useState<string | null>(null);
     // 포트폴리오 전용 페이지 진입 시 초기 선택 탭 ('all' | 'ots' | '기업봉사' | '단체봉사')
     const [initialPortfolioFilter, setInitialPortfolioFilter] = useState<string>('all');
+    // 포트폴리오 전용 페이지 진입 시 초기 검색어 (검색창의 '전체 결과 보기'에서 전달)
+    const [initialPortfolioQuery, setInitialPortfolioQuery] = useState<string>('');
+    // 이동할 때마다 증가 → PortfolioPage 를 새로 마운트해 이미 포트폴리오 화면이어도 새 필터·검색어가 적용되게 함
+    const [portfolioNavKey, setPortfolioNavKey] = useState(0);
 
     // 모달 상태 관리
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);
@@ -126,8 +130,10 @@ function App() {
     };
 
     // 포트폴리오 전용 페이지로 이동
-    const handleNavigatePortfolio = (filter: string = 'all') => {
+    const handleNavigatePortfolio = (filter: string = 'all', query: string = '') => {
         setInitialPortfolioFilter(filter);
+        setInitialPortfolioQuery(query);
+        setPortfolioNavKey((k) => k + 1);
         setCurrentView('portfolio');
         setActiveSection('portfolio');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -171,7 +177,9 @@ function App() {
             ) : (
                 <main className="flex-grow">
                     <PortfolioPage
+                        key={portfolioNavKey}
                         initialFilter={initialPortfolioFilter}
+                        initialQuery={initialPortfolioQuery}
                         onPortfolioItemClick={openPortfolioDetail}
                         onBackToHome={() => handleNavigateHome()}
                         onInquiryClick={() => openInquiry('portfolio_page')}
@@ -190,7 +198,7 @@ function App() {
                 <SearchModal
                     onClose={closeModal}
                     onSelectPortfolioItem={openPortfolioDetail}
-                    onOpenPortfolioPage={() => handleNavigatePortfolio('all')}
+                    onOpenPortfolioPage={(q) => handleNavigatePortfolio('all', q)}
                 />
             )}
             {activeModal === 'inquiry' && <InquiryModal onClose={closeModal} initialMessage={inquiryPrefill} />}
