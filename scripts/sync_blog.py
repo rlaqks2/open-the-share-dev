@@ -12,6 +12,7 @@
   python scripts/sync_blog.py                  # 로컬: 썸네일 저장 + 바로 DB 반영 (이후 public/images/portfolio 커밋 필요)
   python scripts/sync_blog.py --stage          # CI 1단계: 썸네일 저장 + 반영할 내용을 .sync-pending.json 에 기록
   python scripts/sync_blog.py --ingest-pending # CI 2단계: (썸네일을 push 한 뒤) .sync-pending.json 을 DB 에 반영
+  ... --backfill                               # 현장스케치 최신 30건이 아니라 카테고리 전체를 확인 (누락분 복구용, --stage 와 함께)
   → 이미지가 배포되기 전에 DB 행이 생겨 '깨진 썸네일'이 노출되는 것을 막기 위해 CI 는 2단계로 나눕니다.
   (pillow 설치 시 썸네일 자동 리사이즈: pip install pillow)
 """
@@ -244,13 +245,66 @@ def fetch_press_article_details(log_no: int):
         "date": article_date,
     }
 
-# 포트폴리오로 가져오는 블로그 카테고리 (기업 및 단체봉사 > 현장스케치)
+# 포트폴리오로 가져오는 블로그 카테고리 (기업 및 단체봉사 > 현장스케치, categoryNo 48)
+# ⚠️ RSS 는 전체 카테고리 최근 50개뿐이라 오래된 현장스케치 글을 놓친다 (2026-11-25: 125건 중 27건 누락).
+#    그래서 포트폴리오는 RSS 가 아니라 카테고리 글 목록 API 로 찾는다. RSS 는 언론보도(보도자료)용.
 PORTFOLIO_CATEGORY = "현장스케치"
+PORTFOLIO_CATEGORY_NO = 48
+CATEGORY_PAGE_SIZE = 30
 
 
 def is_open_the_share_portfolio(title: str, category: str, desc: str) -> bool:
     """'현장스케치' 카테고리 글만 포트폴리오로 인정합니다. (칼럼·나눔전달후기·파트너 기업 소개 등 제외)"""
     return category.strip() == PORTFOLIO_CATEGORY
+
+
+def fetch_category_posts(max_pages: int = 1):
+    """현장스케치 카테고리 글 목록 (최신순). 실패하면 None (호출 측에서 RSS 로 대체).
+    반환: [{log_no, title, period(YYYY.MM.DD, KST), year, brief}]"""
+    posts = []
+    for page in range(1, max_pages + 1):
+        url = (f"https://m.blog.naver.com/api/blogs/{BLOG_USER}/post-list"
+               f"?categoryNo={PORTFOLIO_CATEGORY_NO}&itemCount={CATEGORY_PAGE_SIZE}&page={page}")
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15",
+            "Referer": f"https://m.blog.naver.com/{BLOG_USER}",
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except Exception as e:
+            print(f"Category list fetch failed (page {page}): {e}")
+            return None if not posts else posts
+        items = (data.get("result") or {}).get("items") or []
+        if not items:
+            break
+        for it in items:
+            if str(it.get("categoryNo")) != str(PORTFOLIO_CATEGORY_NO):
+                continue
+            try:
+                # addDate = epoch ms → 한국 시간 날짜
+                ts = int(it.get("addDate")) / 1000 + 9 * 3600
+                d = datetime.utcfromtimestamp(ts)
+                period, year = d.strftime("%Y.%m.%d"), d.strftime("%Y")
+            except Exception:
+                period, year = datetime.now().strftime("%Y.%m.%d"), datetime.now().strftime("%Y")
+            posts.append({
+                "log_no": int(it.get("logNo")),
+                "title": it.get("titleWithInspectMessage") or it.get("title") or "",
+                "period": period,
+                "year": year,
+                "brief": it.get("briefContents") or "",
+            })
+        if len(items) < CATEGORY_PAGE_SIZE:
+            break
+    return posts
+
+
+def clean_portfolio_title(title: str) -> str:
+    """예전 글 머리말 '[ 오픈더퓨처 단체 및 기업 봉사활동 ]' 같은 꼬리표를 떼어 기존 항목 제목 형식에 맞춘다."""
+    t = clean_text(title)
+    t = re.sub(r"^\s*\[[^\]]*봉사활동\s*\]\s*", "", t)
+    return t.strip()
 
 
 def summarize_story(desc: str, title: str) -> str:
@@ -358,8 +412,8 @@ def ingest(payload: dict) -> None:
 # 블로그 수집
 # ---------------------------------------------------------------------------
 
-def collect_new_posts() -> dict:
-    """RSS 에서 DB 에 없는 새 포트폴리오·언론보도를 찾아 {portfolio: [...], press: [...]} 로 반환 (썸네일은 바로 저장)."""
+def collect_new_posts(backfill: bool = False) -> dict:
+    """DB 에 없는 새 포트폴리오(현장스케치 카테고리 목록)·언론보도(RSS)를 찾아 {portfolio: [...], press: [...]} 로 반환 (썸네일은 바로 저장)."""
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Checking Naver Blog RSS feed...")
 
     req = urllib.request.Request(RSS_URL, headers={"User-Agent": "Mozilla/5.0"})
@@ -387,6 +441,8 @@ def collect_new_posts() -> dict:
 
     new_portfolio = []
     new_press = []
+
+    rss_portfolio = []  # 카테고리 목록 API 가 실패할 때만 쓰는 대체 후보
 
     for item in items:
         link = item.findtext("link", "").strip()
@@ -437,12 +493,28 @@ def collect_new_posts() -> dict:
             print(f"-> New press release: {clean_p_title} ({press_info['press_link']})")
             continue
 
-        # 2. 나눔 포트폴리오 포스트 처리
+        if log_no and is_open_the_share_portfolio(title, category, desc_rss):
+            try:
+                dt = datetime.strptime(pub_date_str[:16], "%a, %d %b %Y")
+                period, year = dt.strftime("%Y.%m.%d"), dt.strftime("%Y")
+            except Exception:
+                period, year = datetime.now().strftime("%Y.%m.%d"), datetime.now().strftime("%Y")
+            rss_portfolio.append({"log_no": log_no, "title": title, "period": period, "year": year, "brief": desc_rss})
+
+    # 2. 나눔 포트폴리오: 현장스케치 카테고리 글 목록 (평소 최신 30건, --backfill 이면 전체)
+    candidates = fetch_category_posts(max_pages=20 if backfill else 1)
+    if candidates is None:
+        print("-> 카테고리 목록 조회 실패: RSS 의 현장스케치 글로 대체합니다.")
+        candidates = rss_portfolio
+    else:
+        print(f"현장스케치 카테고리 글 {len(candidates)}건 확인 ({'전체' if backfill else '최신'})")
+
+    # 오래된 글부터 처리해 id 가 게시 순서대로 늘어나게 한다
+    for post in sorted(candidates, key=lambda p: (p["period"], p["log_no"])):
+        log_no = post["log_no"]
         if not log_no or log_no in existing_log_nos:
             continue
-
-        if not is_open_the_share_portfolio(title, category, desc_rss):
-            continue
+        title = post["title"]
 
         print(f"New portfolio post detected: [{log_no}] {title}")
         details = fetch_post_details(log_no)
@@ -450,13 +522,7 @@ def collect_new_posts() -> dict:
             print(f"Skipping: could not extract image for {log_no}")
             continue
 
-        try:
-            dt = datetime.strptime(pub_date_str[:16], "%a, %d %b %Y")
-            period = dt.strftime("%Y.%m.%d")
-            year = dt.strftime("%Y")
-        except Exception:
-            period = datetime.now().strftime("%Y.%m.%d")
-            year = datetime.now().strftime("%Y")
+        period, year = post["period"], post["year"]
 
         max_id += 1
         local_filename = f"item_{max_id:03d}.jpg"
@@ -478,8 +544,8 @@ def collect_new_posts() -> dict:
             max_id -= 1
             continue
 
-        clean_tit = clean_text(title)
-        clean_story = summarize_story(clean_text(details["desc"]), clean_tit)
+        clean_tit = clean_portfolio_title(title)
+        clean_story = summarize_story(clean_text(details["desc"] or post.get("brief", "")), clean_tit)
         org_type, cat, partner = determine_metadata(clean_tit, clean_story)
         image_path = f"images/portfolio/{local_filename}"
 
@@ -517,7 +583,7 @@ def main():
         os.remove(PENDING_PATH)
         return
 
-    payload = collect_new_posts()
+    payload = collect_new_posts(backfill="--backfill" in args)
     n_p, n_pr = len(payload["portfolio"]), len(payload["press"])
     if not n_p and not n_pr:
         print("No new posts or press releases. Website is up to date.")

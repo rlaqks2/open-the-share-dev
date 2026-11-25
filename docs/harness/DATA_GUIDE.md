@@ -75,7 +75,8 @@ mockData.portfolioItems / pressReleases          ← 이미지 상대경로에 B
 **정렬**: `pull-content.mjs` 가 `period` 내림차순(같은 날은 `id` 오름차순)으로 받아오고, 화면도 `period` 로 다시 정렬합니다.
 
 ### 블로그 자동 수집 (`scripts/sync_blog.py` + `.github/workflows/sync-blog.yml`)
-- GitHub Actions 가 **매시간**(실제로는 GitHub 사정으로 수 시간씩 늦어질 수 있음) RSS(최근 글 약 50개)를 확인 → DB 에 없는 `log_no` 이면서 블로그 카테고리가 **`현장스케치`(기업 및 단체봉사 > 현장스케치)** 인 글만 추가 (칼럼·나눔전달후기·파트너 기업 소개 등은 제외)
+- GitHub Actions 가 **매시간**(실제로는 GitHub 사정으로 수 시간씩 늦어질 수 있음) **`현장스케치` 카테고리(categoryNo 48) 글 목록 최신 30건**을 네이버 모바일 API 로 확인 → DB 에 없는 `log_no` 만 추가 (칼럼·나눔전달후기·파트너 기업 소개 등 다른 카테고리는 제외). 목록 API 가 실패하면 RSS 의 현장스케치 글로 대체
+- ⚠️ RSS 는 전체 카테고리 최근 50개뿐이라 예전에는 오래된 현장스케치 글을 놓쳤습니다 (2026-11-25 기준 125건 중 27건 누락 → 복구). **누락 점검·복구**: `python scripts/sync_blog.py --stage --backfill` (카테고리 전체 확인) → `.sync-pending.json` 검수 → 썸네일 커밋·push → `--ingest-pending`
 - 순서: ① 새 글 탐지·썸네일 저장(`--stage`) → ② 썸네일만 master 에 커밋·push → ③ DB 반영(`--ingest-pending`) → ④ 내용이 바뀌었으면 빌드·배포. 이미지가 먼저 올라가므로 깨진 썸네일이 노출되지 않습니다.
 - DB 쓰기는 RPC `content_ingest` 로만 하며 토큰(`CONTENT_INGEST_TOKEN`, GitHub Actions **Secret**)을 검사합니다. 토큰 원문은 DB 에 없고 sha256 해시만 `content_ingest_tokens` 에 있습니다.
 - `story` 는 og:description 을 90자 이내로 자동 요약 → 문장이 어색하면 운영자가 Table Editor 에서 다듬기
