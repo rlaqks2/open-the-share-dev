@@ -1,29 +1,37 @@
 """
 @file sync_blog.py
 @description 네이버 공식 블로그(https://blog.naver.com/5penthe)에서 새로운 글을 탐지하여
-1) 포트폴리오: 블로그 '현장스케치' 카테고리 글만 수집 → 썸네일 다운로드 → src/data/mockData.ts 에 시간순 정렬 반영
-2) 언론보도: '보도자료' 글에서 실제 언론사 원문 기사 URL 을 추출해 pressReleases 에 반영
+1) 포트폴리오: 블로그 '현장스케치' 카테고리 글만 수집 → 썸네일 다운로드 → Supabase public.portfolio_items 에 추가
+2) 언론보도: '보도자료' 글에서 실제 언론사 원문 기사 URL 을 추출해 public.press_releases 에 추가
 
-⚠️ 이 스크립트는 mockData.ts 의 아래 두 "마커" 문자열에 의존합니다. 절대 이름/들여쓰기를 바꾸지 마세요.
-   - "  portfolioItems: ["
-   - "  ] as PortfolioItem[],"
-   (docs/harness/DATA_GUIDE.md 참고)
+쓰기는 RPC content_ingest(토큰 검사) 로만 합니다. 이미 있는 글(log_no / 기사 링크)은 건너뛰므로
+사람이 Table Editor 에서 고친 값이나 숨긴(is_published=false) 글을 덮어쓰지 않습니다.
+토큰: 환경변수 CONTENT_INGEST_TOKEN (GitHub Actions 시크릿) 또는 로컬 .env.local
 
-로컬 실행:  python scripts/sync_blog.py   (pillow 설치 시 썸네일 자동 리사이즈: pip install pillow)
+실행 방법
+  python scripts/sync_blog.py                  # 로컬: 썸네일 저장 + 바로 DB 반영 (이후 public/images/portfolio 커밋 필요)
+  python scripts/sync_blog.py --stage          # CI 1단계: 썸네일 저장 + 반영할 내용을 .sync-pending.json 에 기록
+  python scripts/sync_blog.py --ingest-pending # CI 2단계: (썸네일을 push 한 뒤) .sync-pending.json 을 DB 에 반영
+  → 이미지가 배포되기 전에 DB 행이 생겨 '깨진 썸네일'이 노출되는 것을 막기 위해 CI 는 2단계로 나눕니다.
+  (pillow 설치 시 썸네일 자동 리사이즈: pip install pillow)
 """
 
 import os
 import re
+import sys
 import html
 import json
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
 # 프로젝트 루트 경로
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-MOCKDATA_PATH = os.path.join(ROOT_DIR, "src", "data", "mockData.ts")
 PORTFOLIO_IMG_DIR = os.path.join(ROOT_DIR, "public", "images", "portfolio")
+CONTENT_SOURCE_PATH = os.path.join(ROOT_DIR, "scripts", "content-source.json")
+PENDING_PATH = os.path.join(ROOT_DIR, ".sync-pending.json")
+ENV_LOCAL_PATH = os.path.join(ROOT_DIR, ".env.local")
 
 RSS_URL = "https://rss.blog.naver.com/5penthe.xml"
 BLOG_USER = "5penthe"
@@ -249,7 +257,7 @@ def summarize_story(desc: str, title: str) -> str:
     """
     프로젝트 스토리는 1~2문장 요약만 둡니다. (상세 내용은 블로그 원문 링크로)
     og:description 은 본문 앞부분이 잘린 문장이라, 이모지·말줄임을 걷어내고 최대 90자로 자릅니다.
-    자동 요약이 어색하면 mockData.ts 에서 사람이 다듬습니다.
+    자동 요약이 어색하면 Supabase Table Editor(portfolio_items.story)에서 사람이 다듬습니다.
     """
     text = re.sub(r"[\U0001F300-\U0001FAFF☀-➿️♡♥★☆]", "", desc or "")
     text = re.sub(r"\s+", " ", text).strip().rstrip(".…").strip()
@@ -290,71 +298,95 @@ def determine_metadata(title: str, desc: str):
 
     return org_type, cat, partner
 
-def sort_mockdata_portfolio_items(mock_txt: str) -> str:
-    s_idx = mock_txt.find("  portfolioItems: [")
-    if s_idx == -1:
-        return mock_txt
-    e_idx = mock_txt.find("  ] as PortfolioItem[],", s_idx)
-    if e_idx == -1:
-        return mock_txt
+# ---------------------------------------------------------------------------
+# Supabase 콘텐츠 DB 연동
+# ---------------------------------------------------------------------------
 
-    header_part = mock_txt[:s_idx + len("  portfolioItems: [")]
-    body_part = mock_txt[s_idx + len("  portfolioItems: ["):e_idx]
-    footer_part = mock_txt[e_idx:]
+def load_content_source():
+    with open(CONTENT_SOURCE_PATH, "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+    url = os.environ.get("CONTENT_SUPABASE_URL") or cfg["url"]
+    key = os.environ.get("CONTENT_PUBLISHABLE_KEY") or cfg["publishableKey"]
+    return url.rstrip("/"), key
 
-    item_blocks = re.findall(r"(\s*\{\s*id:\s*\d+[\s\S]*?\n\s*\})(?:,|\s*$)", body_part)
-    if not item_blocks:
-        return mock_txt
 
-    def get_period(block: str) -> str:
-        m = re.search(r'period:\s*"([^"]+)"', block)
-        return m.group(1) if m else "0000.00.00"
+def load_ingest_token() -> str:
+    token = os.environ.get("CONTENT_INGEST_TOKEN", "").strip()
+    if not token and os.path.exists(ENV_LOCAL_PATH):
+        with open(ENV_LOCAL_PATH, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("CONTENT_INGEST_TOKEN="):
+                    token = line.split("=", 1)[1].strip()
+    if not token:
+        raise SystemExit(
+            "CONTENT_INGEST_TOKEN 이 없습니다. GitHub Actions 시크릿 또는 .env.local 에 등록하세요. (docs/harness/DATA_GUIDE.md)"
+        )
+    return token
 
-    item_blocks_sorted = sorted(item_blocks, key=get_period, reverse=True)
-    new_body = ",\n".join(b.rstrip() for b in item_blocks_sorted) + "\n"
-    return header_part + "\n" + new_body + footer_part
 
-def main():
+def call_rpc(name: str, payload: dict):
+    url, key = load_content_source()
+    body = json.dumps({"p_token": load_ingest_token(), **payload}, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(
+        f"{url}/rest/v1/rpc/{name}",
+        data=body,
+        method="POST",
+        headers={"apikey": key, "Content-Type": "application/json", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", errors="replace")
+        raise SystemExit(f"Supabase RPC {name} 실패 ({e.code}): {detail}")
+
+
+def ingest(payload: dict) -> None:
+    portfolio = payload.get("portfolio", [])
+    press = payload.get("press", [])
+    if not portfolio and not press:
+        print("Nothing to ingest.")
+        return
+    result = call_rpc("content_ingest", {"p_portfolio": portfolio, "p_press": press})
+    print(f"Supabase 반영: 포트폴리오 {result.get('portfolio_inserted')}/{len(portfolio)}건, "
+          f"언론보도 {result.get('press_inserted')}/{len(press)}건")
+    if result.get("portfolio_inserted") != len(portfolio) or result.get("press_inserted") != len(press):
+        print("⚠️ 일부는 이미 DB 에 있어(같은 id·log_no·link) 건너뛰었습니다.")
+
+
+# ---------------------------------------------------------------------------
+# 블로그 수집
+# ---------------------------------------------------------------------------
+
+def collect_new_posts() -> dict:
+    """RSS 에서 DB 에 없는 새 포트폴리오·언론보도를 찾아 {portfolio: [...], press: [...]} 로 반환 (썸네일은 바로 저장)."""
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Checking Naver Blog RSS feed...")
-    
+
     req = urllib.request.Request(RSS_URL, headers={"User-Agent": "Mozilla/5.0"})
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             xml_data = resp.read()
     except Exception as e:
         print(f"Error fetching RSS: {e}")
-        return
+        return {"portfolio": [], "press": []}
 
     try:
         root = ET.fromstring(xml_data)
     except ET.ParseError as e:
         print(f"Error parsing RSS XML: {e}")
-        return
+        return {"portfolio": [], "press": []}
     items = root.findall(".//item")
     print(f"Found {len(items)} posts in RSS feed.")
 
-    mock_txt = open(MOCKDATA_PATH, "r", encoding="utf-8").read()
-    existing_log_nos = set(int(x) for x in re.findall(r"logNo:\s*(\d+)", mock_txt))
-    # 포트폴리오 블록 안의 id 만 집계 (pressReleases/faqs 등 다른 배열의 id 와 섞이지 않도록)
-    p_start = mock_txt.find("  portfolioItems: [")
-    p_end = mock_txt.find("  ] as PortfolioItem[],", p_start)
-    portfolio_block = mock_txt[p_start:p_end] if p_start != -1 and p_end != -1 else mock_txt
-    existing_ids = [int(x) for x in re.findall(r"\bid:\s*(\d+)", portfolio_block)]
-    max_id = max(existing_ids) if existing_ids else 110
+    # 숨긴 글까지 포함한 DB 현재 상태 (숨긴 글을 다시 추가하지 않도록)
+    state = call_rpc("content_state", {})
+    existing_log_nos = set(int(x) for x in state.get("portfolio_log_nos", []))
+    max_id = int(state.get("max_portfolio_id") or 0)
+    existing_press_links = set(html.unescape(x) for x in state.get("press_links", []))
+    print(f"Existing portfolio items in DB: {len(existing_log_nos)} posts (Max ID: {max_id}), press: {len(existing_press_links)}")
 
-    # 기존 언론보도 링크 확인 (중복 등록 방지 — 이스케이프 여부와 무관하게 비교)
-    existing_press_links = set(html.unescape(x) for x in re.findall(r'link:\s*"([^"]+)"', mock_txt))
-    # 언론보도 id 는 React key 로 쓰이므로 반드시 고유해야 함 (예전엔 전부 999 로 들어가 화면이 꼬였음)
-    pr_start = mock_txt.find("pressReleases: [")
-    pr_end = mock_txt.find("] as PressReleaseItem[]", pr_start)
-    press_block = mock_txt[pr_start:pr_end] if pr_start != -1 and pr_end != -1 else ""
-    press_ids = [int(x) for x in re.findall(r"\bid:\s*(\d+)", press_block) if int(x) != 999]
-    max_press_id = max(press_ids) if press_ids else 0
-
-    print(f"Existing portfolio items in mockData: {len(existing_log_nos)} posts (Max ID: {max_id})")
-
-    new_portfolio_entries = []
-    new_press_entries = []
+    new_portfolio = []
+    new_press = []
 
     for item in items:
         link = item.findtext("link", "").strip()
@@ -393,21 +425,16 @@ def main():
             elif "나눔" in clean_p_title or "김장" in clean_p_title:
                 cat_name = "지역사회 나눔"
 
-            press_summary = press_info["summary"] if press_info["summary"] else clean_p_title
-
-            max_press_id += 1
-            press_entry = f"""    {{
-      id: {max_press_id},
-      title: {json.dumps(clean_p_title, ensure_ascii=False)},
-      date: {json.dumps(press_date, ensure_ascii=False)},
-      source: {json.dumps(press_info['source'], ensure_ascii=False)},
-      category: {json.dumps(cat_name, ensure_ascii=False)},
-      summary: {json.dumps(press_summary, ensure_ascii=False)},
-      link: {json.dumps(press_info['press_link'], ensure_ascii=False)}
-    }},"""
-            new_press_entries.append(press_entry)
+            new_press.append({
+                "title": clean_p_title,
+                "date": press_date,
+                "source": press_info["source"],
+                "category": cat_name,
+                "summary": press_info["summary"] if press_info["summary"] else clean_p_title,
+                "link": press_info["press_link"],
+            })
             existing_press_links.add(press_info["press_link"])
-            print(f"-> Added new press release item: {clean_p_title} ({press_info['press_link']})")
+            print(f"-> New press release: {clean_p_title} ({press_info['press_link']})")
             continue
 
         # 2. 나눔 포트폴리오 포스트 처리
@@ -442,79 +469,70 @@ def main():
             })
             with urllib.request.urlopen(img_req, timeout=15) as img_resp:
                 img_bytes = optimize_thumbnail(img_resp.read())
+            os.makedirs(PORTFOLIO_IMG_DIR, exist_ok=True)
             with open(local_path, "wb") as f_img:
                 f_img.write(img_bytes)
             print(f"Downloaded thumbnail -> {local_filename} ({len(img_bytes)} bytes)")
         except Exception as e:
             print(f"Failed to download image {details['imageUrl']}: {e}")
+            max_id -= 1
             continue
 
         clean_tit = clean_text(title)
         clean_story = summarize_story(clean_text(details["desc"]), clean_tit)
         org_type, cat, partner = determine_metadata(clean_tit, clean_story)
+        image_path = f"images/portfolio/{local_filename}"
 
-        gal_urls = [f"`${{BASE_URL}}images/portfolio/{local_filename}`"]
-        for g in details["gallery"]:
-            gal_urls.append(json.dumps(g, ensure_ascii=False))
+        new_portfolio.append({
+            "id": max_id,
+            "log_no": log_no,
+            "title": clean_tit,
+            "category": cat,
+            "org_type": org_type,
+            "partner": clean_text(partner),
+            "period": period,
+            "year": year,
+            "participants": 0,  # 0 = 인원 미확인 (화면에 표시 안 함). 블로그 원문 확인 후 Table Editor 에서 수정
+            "image_path": image_path,
+            "gallery_urls": [image_path] + details["gallery"],
+            "tags": [org_type, cat, "사회공헌·나눔"],
+            "story": clean_story,
+            "blog_link": f"https://blog.naver.com/{BLOG_USER}/{log_no}",
+        })
+        existing_log_nos.add(log_no)
 
-        entry_code = f"""    {{
-      id: {max_id},
-      logNo: {log_no},
-      title: {json.dumps(clean_tit, ensure_ascii=False)},
-      category: {json.dumps(cat, ensure_ascii=False)},
-      orgType: {json.dumps(org_type, ensure_ascii=False)},
-      partner: {json.dumps(clean_text(partner), ensure_ascii=False)},
-      period: {json.dumps(period, ensure_ascii=False)},
-      year: {json.dumps(year, ensure_ascii=False)},
-      participants: 0, // 0 = 인원 미확인 (화면에 표시 안 함). 블로그 원문 확인 후 실제 인원으로 수정
-      imageUrl: `${{BASE_URL}}images/portfolio/{local_filename}`,
-      galleryUrls: [{', '.join(gal_urls)}],
-      tags: [{json.dumps(org_type, ensure_ascii=False)}, {json.dumps(cat, ensure_ascii=False)}, "사회공헌·나눔"],
-      story: {json.dumps(clean_story, ensure_ascii=False)},
-      blogLink: {json.dumps(f"https://blog.naver.com/{BLOG_USER}/{log_no}", ensure_ascii=False)}
-    }},"""
+    return {"portfolio": new_portfolio, "press": new_press}
 
-        new_portfolio_entries.append(entry_code)
 
-    has_changes = False
-    updated_mock = mock_txt
+def main():
+    args = sys.argv[1:]
 
-    # 포트폴리오 삽입
-    if new_portfolio_entries:
-        target_needle = "portfolioItems: ["
-        pos = updated_mock.find(target_needle)
-        if pos != -1:
-            insert_pos = pos + len(target_needle)
-            updated_mock = (
-                updated_mock[:insert_pos]
-                + "\n"
-                + "\n".join(new_portfolio_entries)
-                + updated_mock[insert_pos:]
-            )
-            updated_mock = sort_mockdata_portfolio_items(updated_mock)
-            has_changes = True
+    if "--ingest-pending" in args:
+        if not os.path.exists(PENDING_PATH):
+            print("No pending sync file. Nothing to ingest.")
+            return
+        with open(PENDING_PATH, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        ingest(payload)
+        os.remove(PENDING_PATH)
+        return
 
-    # 언론보도 삽입
-    if new_press_entries:
-        target_press_needle = "pressReleases: ["
-        pos_press = updated_mock.find(target_press_needle)
-        if pos_press != -1:
-            insert_pos_press = pos_press + len(target_press_needle)
-            updated_mock = (
-                updated_mock[:insert_pos_press]
-                + "\n"
-                + "\n".join(new_press_entries)
-                + updated_mock[insert_pos_press:]
-            )
-            # Re-index ids
-            has_changes = True
+    payload = collect_new_posts()
+    n_p, n_pr = len(payload["portfolio"]), len(payload["press"])
+    if not n_p and not n_pr:
+        print("No new posts or press releases. Website is up to date.")
+        return
 
-    if has_changes:
-        with open(MOCKDATA_PATH, "w", encoding="utf-8") as f:
-            f.write(updated_mock)
-        print("Successfully updated mockData.ts with new blog and press releases!")
-    else:
-        print("No new posts or press releases to update. Website is up to date.")
+    if "--stage" in args:
+        with open(PENDING_PATH, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        print(f"Staged {n_p} portfolio / {n_pr} press items -> .sync-pending.json")
+        return
+
+    ingest(payload)
+    if n_p:
+        print("👉 새 썸네일(public/images/portfolio/)을 커밋·push 해야 사이트에 이미지가 보입니다.")
+
 
 if __name__ == "__main__":
     main()

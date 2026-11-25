@@ -7,9 +7,11 @@
 CLAUDE.md                  ← 진입점 (규칙 요약 + 문서 지도)
 AGENTS.md                  ← 다른 에이전트용 포인터
 docs/harness/
+├── STRUCTURE.md           ← ★ 전체 소스 구조도 (폴더 트리·mermaid 다이어그램·수정 위치 색인)
 ├── ARCHITECTURE.md        ← 구조·데이터 흐름·외부 서비스
 ├── NO_BACKEND_POLICY.md   ← 백엔드 없는 환경의 허용/금지 패턴, 비밀값, 승격 기준
-├── DATA_GUIDE.md          ← mockData.ts 스키마·자동화 마커·이미지 규격
+├── DATA_GUIDE.md          ← mockData.ts 스키마·Supabase 콘텐츠 DB·이미지 규격
+├── DATA_RETENTION.md      ← Supabase 보관기간·자동 정리·용량 점검 (R9)
 ├── WORKFLOWS.md           ← 작업 유형별 플레이북 (W1~W9)
 ├── VERIFICATION.md        ← 완료 기준 체크리스트 (L0~L4)
 ├── DEPLOYMENT.md          ← 배포 파이프라인·도메인·환경변수·롤백
@@ -27,3 +29,4 @@ docs/harness/
 - 구조·규칙이 바뀌는 PR/커밋에는 **해당 하네스 문서 수정이 함께** 들어가야 합니다.
 - 문서끼리 내용이 겹치면 한 곳에만 쓰고 링크합니다. (CLAUDE.md 는 요약만)
 - 사실과 다른 문서는 없는 문서보다 해롭습니다. 틀린 부분을 발견하면 바로 고칩니다.
+- 파일을 추가·삭제·이동하면 [STRUCTURE.md](STRUCTURE.md) 의 트리·다이어그램을, Supabase 테이블을 추가하면 [DATA_RETENTION.md](DATA_RETENTION.md) 표를 같은 커밋에서 고칩니다.

@@ -1,11 +1,13 @@
 # ARCHITECTURE — 시스템 구조
 
+> 파일 단위 구조도(폴더 트리·컴포넌트·데이터 흐름 다이어그램)는 [STRUCTURE](STRUCTURE.md), Supabase 보관 규칙은 [DATA_RETENTION](DATA_RETENTION.md).
+
 ## 1. 전체 그림
 
 ```mermaid
 flowchart LR
     subgraph Browser["방문자 브라우저 (정적 SPA)"]
-        APP["React App<br/>mockData.ts 번들 포함"]
+        APP["React App<br/>mockData.ts + 콘텐츠 JSON 번들 포함"]
     end
 
     subgraph GitHub["GitHub (rlaqks2/open-the-share-website)"]
@@ -21,11 +23,15 @@ flowchart LR
     IPAPI["ipapi.co / ipify<br/>(웹훅 설정 시에만)"]
     GA4["Google Analytics 4<br/>(측정 ID 설정 시)"]
     SB["Supabase Edge Function collect<br/>→ Postgres site_events (수집 URL 설정 시)"]
+    SBC["Supabase Postgres<br/>portfolio_items · press_releases<br/>(Table Editor 로 사람이 수정)"]
     CDN["jsDelivr<br/>Pretendard 폰트"]
 
     MASTER --> A1 --> GHP -->|"openthe.kr (CNAME)"| Browser
     A2 -->|"RSS 조회 · 썸네일 저장"| NAVER
-    A2 -->|"mockData.ts 커밋"| MASTER
+    A2 -->|"썸네일 이미지 커밋"| MASTER
+    A2 -->|"새 글 RPC content_ingest (토큰)"| SBC
+    SBC -->|"빌드 시 공개 행 읽기 (pull-content)"| A1
+    SBC -->|"빌드 시 공개 행 읽기"| A2
     A2 --> GHP
     APP -->|"문의 폼"| EMAILJS
     APP -->|"방문 로그 POST(no-cors)"| GAS
@@ -37,7 +43,7 @@ flowchart LR
     APP --> CDN
 ```
 
-**핵심 포인트**: "서버" 역할은 ① 빌드 시점에 번들되는 `mockData.ts` ② GitHub Actions(배치 작업) ③ 외부 SaaS(EmailJS, Google Sheets, GA4, Supabase) 가 나눠 맡습니다.
+**핵심 포인트**: "서버" 역할은 ① 빌드 시점에 번들되는 `mockData.ts` + Supabase 에서 받은 콘텐츠 JSON ② GitHub Actions(배치 작업) ③ 외부 SaaS(EmailJS, Google Sheets, GA4, Supabase) 가 나눠 맡습니다. 방문자 브라우저는 콘텐츠 DB 를 호출하지 않습니다.
 측정 호출은 모두 `src/services/analytics.ts` 한 곳을 거칩니다 → [docs/ANALYTICS.md](../ANALYTICS.md)
 
 ## 2. 프론트엔드 구조
@@ -66,9 +72,10 @@ main.tsx → App.tsx
 
 ## 3. 데이터
 
-- 모든 콘텐츠는 `src/data/mockData.ts` (약 390KB) 에 TypeScript 객체로 들어 있고 **JS 번들에 포함**됩니다. 이름은 mock 이지만 **실제 운영 데이터**입니다.
+- 콘텐츠는 `src/data/mockData.ts` 에 TypeScript 객체로 들어 있고 **JS 번들에 포함**됩니다. 이름은 mock 이지만 **실제 운영 데이터**입니다.
+- 단, `portfolioItems`·`pressReleases` 의 원본은 Supabase `portfolio_items`·`press_releases` 테이블입니다. `npm run build/dev/typecheck` 가 먼저 `scripts/pull-content.mjs` 로 공개 행을 `src/data/generated/*.json`(git 제외)에 받고, `mockData.ts` 가 그것을 import 합니다. 결과 해시는 `/content-version.txt` 로 함께 배포됩니다.
 - 이미지 경로는 `` `${BASE_URL}images/...` `` 형태 (`BASE_URL` = `import.meta.env.BASE_URL` = `/`).
-- 파일 끝에서 `portfolioItems` 를 `period` 내림차순으로 정렬합니다.
+- `portfolioItems` 는 `period` 내림차순(같은 날은 id 오름차순)으로 받아옵니다.
 - 자세한 스키마/규칙은 [DATA_GUIDE](DATA_GUIDE.md).
 
 ## 4. 외부 서비스
@@ -77,6 +84,7 @@ main.tsx → App.tsx
 |--------|------|-----------|--------------|
 | EmailJS | 파트너십 문의 메일 발송 | `src/config/site.ts` (env 로 덮어쓰기 가능) | 실패 모달 + 재시도 버튼, 대표번호 안내 |
 | 네이버 블로그 RSS | 포트폴리오 자동 수집 | `scripts/sync_blog.py` | 스크립트가 조용히 종료, 사이트 영향 없음 |
+| Supabase (Postgres, 콘텐츠) | 포트폴리오·언론보도 원본 | `scripts/content-source.json`(공개 키) + Secret `CONTENT_INGEST_TOKEN`(봇 쓰기) | 빌드 중단 → 이전 배포 유지 (방문자 영향 없음) |
 | 네이버 pstatic 이미지 | 상세 모달 갤러리 | `mockData.galleryUrls` | `onError` → 로컬 썸네일로 대체 |
 | Google Apps Script | 방문자 로그 수집 (선택) | `VITE_GOOGLE_SHEET_WEBHOOK_URL` (GitHub Actions Variables) | 무시 (UX 영향 없음) |
 | ipapi.co / ipify | 방문자 IP·지역 조회 | 웹훅 설정 시(브라우저), Supabase 수집기(서버, 세션 첫 방문만) | 무시 |

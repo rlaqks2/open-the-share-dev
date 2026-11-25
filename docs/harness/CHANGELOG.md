@@ -2,6 +2,20 @@
 
 콘텐츠(포트폴리오 추가 등) 변경은 기록하지 않습니다. 구조·규칙·배포·외부연동이 바뀔 때만 기록합니다.
 
+## 2026-11-25 (2) — Supabase 데이터 위생 + 소스 구조도 (브랜치 `feature/supabase-content`, 미배포 — DB 쪽은 운영에 적용 완료)
+
+- DB: `purge_stale_data()` 로 정리를 한 함수에 모음 (마이그레이션 `20261125120000_data_hygiene.sql`, 운영 DB 적용·1회 실행 확인). 기존 1년 파기·고아 IP 캐시 삭제에 더해 **테스트 방문(`utm_source=claude_*`) 1일**, **pg_cron 실행 기록 14일**(기존엔 무기한 누적). pg_cron `purge-site-events` 는 같은 시간(04:00 KST)에 이 함수를 호출. 용량 확인 뷰 `v_storage_usage`
+- 처리방침 보유기간(1년)은 그대로 — 더 일찍 지우는 변경이라 `privacyPolicy.ts` 수정 없음
+- 하네스: `STRUCTURE.md`(전체 소스 구조도·mermaid 다이어그램·수정 위치 색인), `DATA_RETENTION.md`(테이블별 보관·정리·용량 점검) 신설. CLAUDE.md **R9**(정리 규칙 없는 데이터 금지, 정리는 `purge_stale_data()` 에) 추가, 문서 지도·작업 절차·VERIFICATION L4·README 갱신
+
+## 2026-11-25 — 포트폴리오·언론보도 원본을 Supabase 콘텐츠 DB 로 이전 (브랜치 `feature/supabase-content`, 미배포)
+
+- DB: `portfolio_items`·`press_releases` 신설 (마이그레이션 `20261125000000_site_content.sql`, 측정과 같은 프로젝트). RLS — anon 은 `is_published` 행 읽기만. 기존 `mockData.ts` 98건·15건을 그대로 이전(내용·순서 일치 확인, 언론보도 id 는 1~15 로 재부여)
+- 빌드: `npm run build/dev/typecheck` 가 먼저 `scripts/pull-content.mjs` 로 공개 행을 `src/data/generated/*.json`(git 제외)에 저장 → `mockData.ts` 가 import. 방문자 브라우저는 DB 를 호출하지 않음. CI 에서 조회 실패·0건이면 빌드 중단. 결과 해시를 `/content-version.txt` 로 배포
+- 봇: `sync_blog.py` 가 `mockData.ts` 대신 RPC `content_state`/`content_ingest`(토큰 sha256 검사, SECURITY DEFINER) 로 DB 에 씀. 이미 있는 log_no/link(숨김 포함)는 건너뜀. CI 는 `--stage` → 썸네일만 커밋·push → `--ingest-pending` 2단계
+- 배포: `sync-blog.yml` 이 DB 내용 해시를 운영 `/content-version.txt` 와 비교해 다를 때만 빌드·배포 → Table Editor 수정도 자동 반영. **운영 저장소 Secret `CONTENT_INGEST_TOKEN` 등록 필요**
+- 규칙: CLAUDE.md R2(mockData 마커) 폐지 → "콘텐츠 원본은 DB, generated JSON 수정·커밋 금지"로 교체. DATA_GUIDE 2·3장, NO_BACKEND_POLICY, ARCHITECTURE, WORKFLOWS, VERIFICATION, PLANNER_GUIDE, `/add-portfolio`·`/verify` 갱신
+
 ## 2026-11-24 — 점검 후 버그·운영 이슈 수정 (브랜치 `feature/programs-redesign`, 미배포)
 
 - 버그: 모바일(375px) 가로 넘침(포트폴리오 전체보기 버튼·푸터 저작권 줄), 문의 전송 실패 후 '다시 시도' 시 입력값 유실(폼을 숨기기만 함 + 오류 화면에 대표전화·이메일), 모달 안에서 드래그해 바깥에서 떼면 닫히던 문제(`Modal`·`SearchModal`: 배경에서 누르고 뗄 때만 닫힘), 검색창 '전체 결과 보기'가 검색어를 넘기지 않던 문제(`PortfolioPage` `initialQuery` + 이동마다 key 로 재마운트), 연도 필터 기준 불일치, `PortfolioDetailModal` 조건부 Hook

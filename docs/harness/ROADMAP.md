@@ -17,8 +17,8 @@
    - GitHub Pages SPA 대응: `public/404.html` 리다이렉트 트릭 또는 `HashRouter`
    - 포트폴리오 상세 URL 이 생기면 카카오톡 공유 미리보기도 개선 가능 (빌드 시 정적 페이지 생성 필요 → P2 SSG)
 2. **포트폴리오 데이터 분리**
-   - `portfolioItems` 를 `public/data/portfolio.json` 으로 옮기고 런타임 `fetch` → 초기 JS 번들 ~390KB 감소
-   - `sync_blog.py` 는 TS 문자열 조작 대신 JSON 읽기/쓰기로 단순화 (마커 의존 제거)
+   - ✅ 2026-11-25: 포트폴리오·언론보도 원본을 Supabase 로 이전, `sync_blog.py` 마커 의존 제거 (빌드 시 JSON 생성)
+   - 남은 일: 생성 JSON 을 번들 대신 `public/data/*.json` 런타임 `fetch` 로 바꿔 초기 JS 번들 감소 검토
 3. **코드 스플리팅**: `PortfolioPage`, `PortfolioDetailModal`, `PrivacyPolicyModal` 을 `React.lazy` 로 분리
 4. **서비스 레이어**: `src/services/{inquiry,analytics,portfolio}.ts` — 외부 호출을 한 곳에 모아 백엔드 교체 대비
 5. **`mockData.ts` → `content/` 로 분할**: `company.ts`, `programs.ts`, `partners.ts`, `faqs.ts` … (가독성·충돌 감소)

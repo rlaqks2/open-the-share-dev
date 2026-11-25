@@ -1,6 +1,6 @@
 # NO_BACKEND_POLICY — 백엔드 없는 사이트의 설계 원칙
 
-이 사이트는 **GitHub Pages 정적 호스팅**입니다. 서버 코드를 실행할 수 없고, DB 도 없습니다.
+이 사이트는 **GitHub Pages 정적 호스팅**입니다. 서버 코드를 실행할 수 없습니다. DB 는 SaaS(Supabase) 하나이며, 사이트가 "실행 중에" DB 를 읽는 일은 없습니다 (측정은 Edge Function 으로 쓰기만, 콘텐츠는 빌드 때 읽기만).
 기능 요청을 받으면 아래 순서로 판단합니다.
 
 ## 1. 대원칙
@@ -10,12 +10,13 @@
 3. **"주기적 갱신"은 GitHub Actions 가 서버 역할을 한다.** (cron → 데이터 수집 → 커밋 → 재배포)
 4. **실패해도 사이트는 멀쩡해야 한다.** 외부 호출은 전부 `try/catch` + 타임아웃 + 대체 UI.
 5. **localStorage 는 "그 방문자 한 명의 브라우저"일 뿐이다.** 공유 상태·통계·관리 데이터로 쓰지 않는다.
+6. **DB(Supabase)에는 정리 규칙이 있는 데이터만 쌓는다.** 보관기간·정리 방법은 [DATA_RETENTION](DATA_RETENTION.md) (CLAUDE.md R9).
 
 ## 2. 기능 유형별 허용 패턴
 
 | 요청 유형 | ✅ 이렇게 한다 | ❌ 하지 않는다 |
 |-----------|---------------|----------------|
-| 콘텐츠 추가/수정 (포트폴리오, 공지, 언론보도) | `mockData.ts` 수정 → push → 재배포. 블로그 글은 `sync_blog.py` 가 자동 반영 | 관리자 페이지에서 직접 수정하는 CMS 흉내 |
+| 콘텐츠 추가/수정 (포트폴리오, 언론보도) | Supabase Table Editor 에서 수정 → 블로그 동기화 워크플로가 바뀐 내용을 감지해 재배포. 블로그 글은 `sync_blog.py` 가 토큰 RPC(`content_ingest`)로 자동 추가. 그 밖의 문구는 `mockData.ts` 수정 → push | 관리자 페이지에서 직접 수정하는 CMS 흉내 / 브라우저가 런타임에 DB 를 조회해 화면을 그림(일시정지 시 빈 화면, 방문자 수만큼 트래픽) / anon 쓰기 정책 |
 | 문의/신청 폼 | EmailJS (현재), 또는 Google Forms·Tally·Formspree 임베드 | 폼 데이터를 localStorage 에 저장하고 "접수됨" 표시 |
 | 방문 통계·행동 데이터 | `src/services/analytics.ts` 한 곳에서 GA4 + Supabase Edge Function(`collect`) → Postgres 로 전송 ([ANALYTICS](../ANALYTICS.md)). 기존 Apps Script → Sheets([VISITOR_LOG](../VISITOR_LOG.md))는 병행 후 종료 예정. 사이트에 통계 UI 를 두지 않음 | 클라이언트 localStorage 로그를 "전체 통계"로 표시 / 브라우저에서 DB 테이블에 직접 insert(anon 쓰기 정책) |
 | 검색 | 번들된 데이터에 대한 클라이언트 필터 (현재) | 서버 검색 API |
@@ -33,7 +34,9 @@
 | Google Apps Script 웹앱 URL | ⚠️ 공개됨(번들에 포함). 스팸 POST 가능성 인지 | GitHub Actions Variables `VITE_GOOGLE_SHEET_WEBHOOK_URL` |
 | GA4 측정 ID (`G-…`) | ✅ (설계상 공개값) | GitHub Actions Variables `VITE_GA_MEASUREMENT_ID` |
 | Supabase `collect` 함수 URL | ⚠️ 공개됨. 함수가 Origin·이벤트명·크기 검증 | GitHub Actions Variables `VITE_ANALYTICS_COLLECT_URL` |
-| Supabase **service_role** 키 · DB 비밀번호 | ❌ 절대 금지 (RLS 우회 전권) | Edge Function 런타임 자동 주입 / 개인 비밀번호 관리자. 저장소·`VITE_*` 금지 |
+| Supabase **publishable** 키 (`sb_publishable_…`) | ✅ 공개값. RLS 로 `portfolio_items`·`press_releases` 의 공개 행 읽기 + 토큰 RPC 호출만 가능 | `scripts/content-source.json` (빌드 스크립트 전용, 번들에는 넣지 않음) |
+| `CONTENT_INGEST_TOKEN` (블로그 봇 → 콘텐츠 DB 쓰기) | ❌ 비밀. DB 에는 sha256 해시만 | GitHub Actions **Secrets** / 로컬 `.env.local`. 저장소·`VITE_*` 금지. 교체법: DATA_GUIDE §3 |
+| Supabase **service_role** 키 · DB 비밀번호 | ❌ 절대 금지 (RLS 우회 전권) | Edge Function 런타임 자동 주입 / 개인 비밀번호 관리자. 저장소·`VITE_*`·GitHub Secrets 금지 |
 | GitHub Token | ❌ | Actions 의 `secrets.GITHUB_TOKEN` 만 사용 |
 | `.vscode/mcp.json` 의 `GITHUB_PERSONAL_ACCESS_TOKEN` | ❌ | **빈 값으로 유지. 실제 토큰을 넣고 커밋하지 말 것** |
 
@@ -51,7 +54,7 @@
 
 다음 중 하나라도 해당되면 "서버리스 백엔드" 도입을 검토합니다. ([ROADMAP](ROADMAP.md) Phase 3)
 
-- 사람이 웹에서 콘텐츠를 직접 등록/수정해야 한다 (Git/코드 수정 불가 인력)
+- 사람이 웹에서 콘텐츠를 직접 등록/수정해야 한다 (Git/코드 수정 불가 인력) → 포트폴리오·언론보도는 2026-11-25 Supabase Table Editor + 빌드 시 JSON 생성(아래 추천 경로 1)으로 해결
 - 로그인이 필요한 기능 (참여기관 전용 리포트 열람 등)
 - 폼 데이터를 DB 로 관리하고 상태(접수→진행→완료)를 추적해야 한다
 

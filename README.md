@@ -37,11 +37,12 @@ npm run dev        # http://localhost:5173/
 src/
 ├── App.tsx            # 화면/모달 상태 관리
 ├── config/site.ts     # 외부 서비스 설정 (공개값만)
-├── data/mockData.ts   # ★ 사이트 콘텐츠 전체 (문구·포트폴리오·파트너·FAQ·회사정보)
+├── data/mockData.ts   # ★ 사이트 콘텐츠 (문구·파트너·FAQ·회사정보) — 포트폴리오·언론보도는 Supabase DB → 빌드 때 generated/*.json
 ├── components/        # layout · sections · pages · modals · forms · ui
 ├── hooks/ utils/      # 스크롤 애니메이션, 방문자 로그, 접근성 헬퍼
 public/                # CNAME, 파비콘, images/(portfolio, partners)
-scripts/sync_blog.py   # 블로그 → 포트폴리오 동기화
+scripts/sync_blog.py   # 블로그 → Supabase 콘텐츠 DB 동기화
+scripts/pull-content.mjs # 빌드 전 Supabase 콘텐츠 → JSON
 docs/                  # 기획 문서 + harness/(작업 규칙)
 .claude/commands/      # 에이전트 슬래시 커맨드
 ```

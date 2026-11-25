@@ -12,6 +12,6 @@ description: 현재 변경사항을 하네스 체크리스트(L0~L4)로 검증�
 2. L0 실행
    - `npm run build`
    - `git diff` 에서 비밀값 패턴(`key`, `token`, `secret`, `password`, `@gmail`, 전화번호 신규 하드코딩) 검색
-   - `grep -n "  portfolioItems: \[" src/data/mockData.ts` 와 `grep -n "  ] as PortfolioItem\[\]," src/data/mockData.ts` 가 각각 1건인지 확인
+   - 빌드 로그에 `[pull-content] 포트폴리오 N건` 이 찍혔는지, `git status` 에 `src/data/generated/`·`.env.local`·`.sync-pending.json` 이 없는지 확인
 3. 브라우저 확인이 가능하면 `npm run preview` 후 L1 항목을 375px·1280px 에서 확인한다. 불가능하면 "미확인" 으로 명시한다.
 4. VERIFICATION.md 의 "에이전트용 보고 형식" 으로 결과를 보고한다. 실패 항목은 원인과 수정안을 함께 제시한다.

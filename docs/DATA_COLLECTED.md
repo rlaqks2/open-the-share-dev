@@ -8,7 +8,7 @@ openthe.kr 이 방문자에게서 수집하는 데이터의 **전체 목록**입
 
 | 경로 | 상태 | 저장 위치 | 보유기간 | 조회 방법 |
 |---|---|---|---|---|
-| **Supabase Postgres** (1차 데이터) | ✅ 운영 중 | `forachixmfkdenzzvfog` (서울) `public.site_events`, `public.ip_lookups` | 1년 (pg_cron 매일 04:00 KST 자동 삭제) | Supabase SQL Editor, psql/DBeaver, Looker Studio |
+| **Supabase Postgres** (1차 데이터) | ✅ 운영 중 | `forachixmfkdenzzvfog` (서울) `public.site_events`, `public.ip_lookups` | 1년 (pg_cron 매일 04:00 KST 자동 삭제, 테스트 방문은 1일 — [DATA_RETENTION](harness/DATA_RETENTION.md)) | Supabase SQL Editor, psql/DBeaver, Looker Studio |
 | **Google Analytics 4** | ✅ 운영 중 | GA4 속성 `openTheShare` (`G-HQ1X2K8LNH`) | 사용자 단위 데이터 2개월 (집계 보고서는 유지) | GA4 보고서·탐색, (선택) BigQuery |
 | 구글 시트 방문자 로그 | ⏸ 꺼짐 | — | — | `VITE_GOOGLE_SHEET_WEBHOOK_URL` 미등록 → 수집 안 함 ([VISITOR_LOG.md](VISITOR_LOG.md)) |
 | 문의 폼 (EmailJS) | ✅ 운영 중 | 담당자 메일함 (`opentheshare@naver.com`) | 1년 | 메일함 — **측정 데이터와 별개**, DB 에 저장하지 않음 |
@@ -169,5 +169,5 @@ openthe.kr 이 방문자에게서 수집하는 데이터의 **전체 목록**입
 |---|---|---|---|---|---|---|---|---|
 | 2026-11-09 17:53:35 | page_view | `/` | `claude_verify_db` | Desktop / Windows / Chrome | 1536x864 | ko | South Korea, Gyeonggi-do, Seongnam-si | Korea Telecom |
 
-테스트 데이터 정리: `delete from site_events where utm_source like 'claude_verify%';`
+테스트 데이터 정리: `utm_source=claude_*` 방문은 `purge_stale_data()` 가 하루 뒤 자동 삭제 (즉시 지우려면 `delete from site_events where utm_source like 'claude\_%';`)
 (GA4 의 테스트 방문 `claude_verify`, `claude_verify2` 는 삭제 불가 — 2개월 후 사용자 데이터 만료)

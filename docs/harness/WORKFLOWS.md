@@ -13,12 +13,15 @@
 
 ## W2. 포트폴리오 추가·수정 (난이도 ★) — `/add-portfolio`
 
-- **네이버 블로그에 올린 글**이면 기다리면 됩니다 (매시간 자동). 즉시 반영: GitHub → Actions → "1-Hour Auto Sync Blog Posts & Deploy" → Run workflow. 로컬: `npm run sync:blog`
+원본은 **Supabase `portfolio_items` 테이블**입니다 ([DATA_GUIDE](DATA_GUIDE.md) 2·3장). `mockData.ts` 에 항목을 적지 않습니다.
+
+- **네이버 블로그에 올린 글**이면 기다리면 됩니다 (매시간 자동). 즉시 반영: GitHub → Actions → "1-Hour Auto Sync Blog Posts & Deploy" → Run workflow. 로컬: `npm run sync:blog` (`.env.local` 의 `CONTENT_INGEST_TOKEN` 필요, 새 썸네일은 직접 커밋)
+- **수정·숨기기**: Supabase Table Editor 에서 칸 수정 / `is_published = false`. 같은 워크플로가 다음 실행 때 바뀐 내용을 감지해 재배포 (바로 반영: Run workflow)
 - **수동 추가**
-  1. 썸네일을 규격([DATA_GUIDE](DATA_GUIDE.md) 5장)에 맞춰 `public/images/portfolio/item_NNN.jpg` 로 저장
-  2. `portfolioItems` 배열 안(마커 사이)에 3장 형식으로 항목 추가. `id` = 현재 최대값+1
+  1. 썸네일을 규격([DATA_GUIDE](DATA_GUIDE.md) 5장)에 맞춰 `public/images/portfolio/item_NNN.jpg` 로 저장 → 커밋·배포 **먼저**
+  2. Table Editor 에서 행 추가. `id` = 현재 최대값+1, `image_path` = `images/portfolio/item_NNN.jpg`
   3. `category` 는 5개 허용값 중 하나, `period` 는 `YYYY.MM.DD`
-- **자동 수집된 항목 검수**: `participants: 0`(미확인, 예전 기본값 30·40), `partner: "OPEN THE SHARE"`, `orgType` 오분류가 흔함 → 블로그 원문 보고 교정
+- **자동 수집된 항목 검수**: `participants: 0`(미확인, 예전 기본값 30·40), `partner: "OPEN THE SHARE"`, `org_type` 오분류가 흔함 → 블로그 원문 보고 Table Editor 에서 교정
 
 ## W3. 참여기관 로고 추가 (난이도 ★)
 

@@ -33,3 +33,8 @@ __pycache__/
 *.njsproj
 *.sln
 *.sw?
+
+# Supabase 콘텐츠 DB 에서 빌드 때 받아오는 파일 (scripts/pull-content.mjs) — 커밋하지 않음
+src/data/generated/
+public/content-version.txt
+.sync-pending.json

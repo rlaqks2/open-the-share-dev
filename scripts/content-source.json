@@ -1,0 +1,5 @@
+{
+  "_comment": "콘텐츠 DB(Supabase) 접속 정보 — 공개값만. publishable 키는 RLS 로 '공개된 행 읽기'만 가능하다. 비밀값(CONTENT_INGEST_TOKEN, service_role)은 절대 여기에 넣지 않는다. docs/harness/DATA_GUIDE.md",
+  "url": "https://forachixmfkdenzzvfog.supabase.co",
+  "publishableKey": "sb_publishable_KFuLjRPnk4YcDlrt-UitMg_seM294cR"
+}

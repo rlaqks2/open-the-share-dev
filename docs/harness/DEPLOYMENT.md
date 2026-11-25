@@ -69,8 +69,11 @@ git push origin master
 |------|------------|------|
 | `VITE_GOOGLE_SHEET_WEBHOOK_URL` | 저장소 Settings → Secrets and variables → Actions → **Variables** | 방문자 로그 수집용 Apps Script 웹앱 URL. 비우면 수집 안 함. 설정법: [VISITOR_LOG](../VISITOR_LOG.md) |
 | `VITE_EMAILJS_*` | (선택) 동일 | 비우면 `src/config/site.ts` 기본값 |
+| `CONTENT_INGEST_TOKEN` | 운영 저장소 Settings → Secrets and variables → Actions → **Secrets** (Variables 아님) | 블로그 봇이 Supabase 콘텐츠 DB 에 새 글을 쓰는 토큰. **없으면 sync-blog.yml 이 실패**합니다. 빌드(deploy.yml)에는 필요 없음. 교체법: [DATA_GUIDE §3](DATA_GUIDE.md) |
 
 로컬은 `.env.example` → `.env.local` 로 복사해서 사용 (`.env*` 는 git 제외).
+
+**콘텐츠 DB 와 빌드**: `npm run build` 는 먼저 Supabase 에서 포트폴리오·언론보도를 받아옵니다(`scripts/pull-content.mjs`, 공개 키라 시크릿 불필요). Actions 에서 조회가 실패하면 빌드가 중단되고 운영 사이트는 이전 배포 그대로입니다. Supabase 프로젝트가 일시정지되면 대시보드에서 Restore 후 재실행하세요.
 
 ## 5. 롤백
 

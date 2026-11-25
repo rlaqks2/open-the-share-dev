@@ -7,7 +7,8 @@
 - [ ] `npm run build` 성공 (tsc 오류 0, vite 빌드 성공)
   - 흔한 실패: 안 쓰는 import/변수(`noUnusedLocals`), 따옴표·쉼표 누락, 타입 불일치
 - [ ] 커밋에 비밀값·개인정보·`.env` 파일이 없음 (`git diff --staged` 확인)
-- [ ] `mockData.ts` 마커 2개(`  portfolioItems: [`, `  ] as PortfolioItem[],`) 그대로 존재
+- [ ] 빌드 첫 줄에 `[pull-content] 포트폴리오 N건 · 언론보도 M건` 이 찍힘 (Supabase 콘텐츠 조회 성공)
+- [ ] `src/data/generated/`, `.env.local`, `.sync-pending.json` 이 커밋에 없음
 
 ## L1. 화면 확인 (UI·데이터 변경 시)
 
@@ -36,11 +37,13 @@
 - [ ] Chrome DevTools Lighthouse (모바일) — Performance/Accessibility/SEO 각 80+ 목표
 - [ ] `index.html` 의 title / description / og:* 가 내용과 맞음
 
-## L4. 자동화 스크립트 변경 시 (`scripts/`, `.github/workflows/`)
+## L4. 자동화 스크립트 변경 시 (`scripts/`, `.github/workflows/`, `supabase/`)
 
 - [ ] `python -m py_compile scripts/sync_blog.py`
-- [ ] 로컬에서 `python scripts/sync_blog.py` 1회 실행 → "No new posts" 또는 정상 추가, `git diff src/data/mockData.ts` 로 형식 확인
+- [ ] 로컬에서 `python scripts/sync_blog.py --stage` 1회 실행 → "No new posts" 또는 `.sync-pending.json` 내용 확인 (DB 는 쓰지 않음). 확인 후 생긴 썸네일·pending 파일은 지우거나 `--ingest-pending` 으로 반영
 - [ ] 워크플로 YAML 수정 후 Actions 탭에서 `workflow_dispatch` 로 수동 실행해 성공 확인
+- [ ] `supabase/migrations/` 추가 시: 새 테이블·이벤트가 [DATA_RETENTION](DATA_RETENTION.md) 표에 보관기간·정리 방법과 함께 있음 (R9). 적용 후 `get_advisors`(security) 확인, `select public.purge_stale_data();` 가 오류 없이 실행됨
+- [ ] 파일을 추가·삭제·이동했다면 [STRUCTURE](STRUCTURE.md) 트리·다이어그램 갱신
 
 ## 에이전트용 보고 형식
 

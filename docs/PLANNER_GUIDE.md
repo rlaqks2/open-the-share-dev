@@ -83,8 +83,8 @@ git pull origin master
 
 ## 5. 어디를 고치면 사이트가 바뀌나요? (핵심 수정 가이드)
 
-웹사이트에 노출되는 텍스트, 숫자, FAQ, 포트폴리오의 95%는  
-👉 **`src/data/mockData.ts`** 파일 단 하나에 모두 모여 있습니다!
+웹사이트에 노출되는 텍스트, 숫자, FAQ의 대부분은  
+👉 **`src/data/mockData.ts`** 파일 하나에 모여 있습니다! (포트폴리오·언론보도만 예외 — 아래 ④)
 
 VS Code 좌측 탐색기에서 `src` → `data` → **`mockData.ts`** 파일을 클릭해 엽니다.
 
@@ -119,31 +119,21 @@ programs: [
 ]
 ```
 
-### ④ 포트폴리오 추가 또는 수정하기
-* **네이버 공식 블로그에 봉사 후기를 올리면 1시간 안에 자동으로 추가됩니다.** (직접 입력할 필요 없음)
-* 자동 추가된 항목의 참여기관명·인원·분류가 틀렸다면 `mockData.ts` 에서 해당 글을 찾아 고쳐 주세요. (블로그 글 번호 `logNo` 로 검색하면 빠릅니다)
-* 직접 추가할 때는 아래 형식을 그대로 복사해서 쓰세요. 자세한 규칙: [harness/DATA_GUIDE.md](harness/DATA_GUIDE.md)
-  * 사진은 `public/images/portfolio/` 폴더에 `item_번호.jpg` 로 넣습니다. (300KB 이하 권장)
-  * 날짜(`period`)는 반드시 `2026.11.03` 형식으로 씁니다.
-  * `category` 는 `원데이메이킹`, `찾아가는 과학교실`, `스페이스 업사이클링`, `친환경 ESG`, `지역사회 나눔` 중 하나만 씁니다.
-```typescript
-    {
-      id: 111,
-      title: "○○기업과 함께한 업사이클링 봉사",
-      category: "스페이스 업사이클링",
-      orgType: "기업봉사",
-      partner: "○○기업",
-      period: "2026.11.03",
-      year: "2026",
-      participants: 40,
-      imageUrl: `${BASE_URL}images/portfolio/item_111.jpg`,
-      galleryUrls: [`${BASE_URL}images/portfolio/item_111.jpg`],
-      tags: ["기업봉사", "스페이스 업사이클링"],
-      story: "활동 내용을 2~4문장으로 적습니다.",
-      blogLink: "https://blog.naver.com/5penthe/글번호"
-    },
-```
-> ⚠️ `portfolioItems: [` 줄과 `] as PortfolioItem[],` 줄은 자동 수집 프로그램이 사용하는 표시이므로 **절대 지우거나 고치지 마세요.**
+### ④ 포트폴리오 · 언론보도 추가 또는 수정하기 (코드 수정 없이, 웹 화면에서)
+포트폴리오와 언론보도는 `mockData.ts` 가 아니라 **Supabase 의 표(테이블)** 에 저장되어 있습니다.
+엑셀처럼 칸을 고치면 됩니다.
+
+* **블로그에 '현장스케치' 글을 올리면 자동으로 추가됩니다.** (보통 몇 시간 안, 직접 입력할 필요 없음)
+* **고치기**: [Supabase 대시보드](https://supabase.com/dashboard) → 프로젝트 `openthe-kr-analytics` → **Table Editor** → `portfolio_items`(포트폴리오) 또는 `press_releases`(언론보도) → 칸을 눌러 수정 → Save
+  * 자동 추가된 항목은 참여기관명(`partner`)·인원(`participants`, 0 = 표시 안 함)·분류(`category`, `org_type`)·요약(`story`)이 틀릴 수 있으니 확인해 주세요.
+  * 블로그 글 번호(`log_no`)나 제목으로 검색하면 빠릅니다.
+* **숨기기**: 지우지 말고 `is_published` 를 `false` 로 바꿉니다. (지우면 자동 수집이 다시 추가할 수 있어요)
+* **사이트 반영**: 고친 내용은 자동 동기화가 다음에 돌 때 사이트에 반영됩니다. 바로 반영하려면 GitHub → **Actions** → "1-Hour Auto Sync Blog Posts & Deploy" → **Run workflow**.
+* 지켜야 할 형식 (틀리면 저장이 거부됩니다)
+  * 날짜(`period`, 언론보도는 `date`)는 반드시 `2026.11.03` 형식
+  * `org_type` 은 `기업봉사` 또는 `단체봉사`
+  * `category` 는 `원데이메이킹`, `찾아가는 과학교실`, `스페이스 업사이클링`, `친환경 ESG`, `지역사회 나눔` 중 하나 (다른 값이면 필터에 안 잡힘)
+* **블로그에 없는 활동을 직접 추가**할 때는 사진 파일을 먼저 사이트에 올려야 해서 개발 담당자에게 요청해 주세요. 자세한 규칙: [harness/DATA_GUIDE.md](harness/DATA_GUIDE.md)
 
 ### ⑤ FAQ (자주 묻는 질문) 수정/추가하기
 ```typescript

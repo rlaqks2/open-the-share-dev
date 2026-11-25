@@ -1,8 +1,16 @@
 name: 1-Hour Auto Sync Blog Posts & Deploy
 
+# 블로그 새 글 → Supabase 콘텐츠 DB(portfolio_items / press_releases) → 사이트 재배포
+# 그리고 사람이 Supabase Table Editor 에서 고친 내용도 이 워크플로가 다음 실행 때 배포한다.
+#   (DB 내용 해시를 운영 사이트의 /content-version.txt 와 비교해 "달라졌을 때만" 빌드·배포)
+#
+# 필요한 설정 (운영 저장소 Settings → Secrets and variables → Actions)
+#   Secrets  : CONTENT_INGEST_TOKEN  (블로그 봇 → DB 쓰기 토큰, docs/harness/DATA_GUIDE.md)
+#   Variables: VITE_GA_MEASUREMENT_ID / VITE_ANALYTICS_COLLECT_URL / VITE_GOOGLE_SHEET_WEBHOOK_URL (deploy.yml 과 동일)
+
 on:
   schedule:
-    # 매 1시간마다 실행 (UTC 기준 매 시간 0분)
+    # 매 1시간마다 실행 (UTC 기준 매 시간 0분). GitHub 사정으로 몇 시간씩 늦어질 수 있음
     - cron: '0 * * * *'
   # GitHub 웹 브라우저에서 언제든 'Run workflow' 버튼으로 즉시 수동 실행도 가능
   workflow_dispatch:
@@ -20,6 +28,8 @@ jobs:
     # 운영 저장소에서만 실행 (테스트 저장소 open-the-share-dev 에서는 자동 커밋·배포하지 않음)
     if: github.repository == 'rlaqks2/open-the-share-website'
     runs-on: ubuntu-latest
+    env:
+      CONTENT_INGEST_TOKEN: ${{ secrets.CONTENT_INGEST_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,39 +46,49 @@ jobs:
           # pillow: 블로그 썸네일 리사이즈/압축용 (sync_blog.py)
           pip install pillow
 
-      - name: Run Blog Post Sync Script
-        run: |
-          python scripts/sync_blog.py
+      # 1단계: 새 글 탐지 + 썸네일 저장 + DB 에 넣을 내용을 .sync-pending.json 에 기록 (DB 는 아직 안 씀)
+      - name: Stage new blog posts
+        run: python scripts/sync_blog.py --stage
 
-      - name: Check for updates
-        id: check_changes
+      # 2단계: 썸네일을 먼저 master 에 올린다 (이미지 파일만 커밋 → 코드·데이터 충돌 없음)
+      #        DB 행보다 이미지가 먼저 있어야 '깨진 썸네일'이 노출되지 않는다.
+      - name: Push new thumbnails
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "New blog posts detected! Proceeding with commit and deployment."
+          if [ -n "$(git status --porcelain public/images/portfolio/)" ]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add public/images/portfolio/
+            git commit -m "chore(auto-sync): add portfolio thumbnails from blog [skip ci]"
+            git pull --rebase origin master
+            git push origin master
           else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No new blog posts. Skipping build and deploy."
+            echo "No new thumbnails."
           fi
 
-      # 순서: 커밋 → 최신 master 위로 rebase → 빌드 검사 → (통과 시에만) push → 배포
-      # 예전에는 push 를 먼저 해서, 자동 생성 데이터로 빌드가 깨지면 master 가 깨진 채 남았다.
-      - name: Commit changes (local only)
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add public/images/portfolio/ src/data/mockData.ts
-          git commit -m "chore(auto-sync): update portfolio with new blog posts [skip ci]"
-          # 사람이 그 사이 push 한 커밋이 있어도 그 위에서 빌드·push 하도록 rebase
-          git pull --rebase origin master
+      # 3단계: DB 반영 (이미 있는 글은 건너뜀 → 사람이 고친 값·숨긴 글을 덮어쓰지 않음)
+      - name: Ingest staged posts into Supabase
+        run: python scripts/sync_blog.py --ingest-pending
 
       - name: Setup Node.js
-        if: steps.check_changes.outputs.has_changes == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+
+      # 4단계: DB 내용이 운영 사이트와 다를 때만 빌드·배포
+      - name: Check content version
+        id: check_changes
+        run: |
+          node scripts/pull-content.mjs
+          NEW_VERSION="$(cat public/content-version.txt)"
+          LIVE_VERSION="$(curl -fsS --max-time 15 "https://openthe.kr/content-version.txt?t=$(date +%s)" || echo none)"
+          echo "DB: $NEW_VERSION / live: $LIVE_VERSION"
+          if [ "$NEW_VERSION" != "$LIVE_VERSION" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "Content unchanged. Skipping build and deploy."
+          fi
 
       - name: Install dependencies
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -83,11 +103,7 @@ jobs:
           VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
           VITE_ANALYTICS_COLLECT_URL: ${{ vars.VITE_ANALYTICS_COLLECT_URL }}
 
-      # 빌드가 실패하면 여기까지 오지 않으므로 깨진 데이터가 master 에 올라가지 않는다.
-      - name: Push to master
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: git push origin master
-
+      # 빌드가 실패하면 여기까지 오지 않으므로 운영 사이트는 이전 배포 그대로 유지된다.
       - name: Deploy to GitHub Pages (gh-pages)
         if: steps.check_changes.outputs.has_changes == 'true'
         uses: peaceiris/actions-gh-pages@v4
