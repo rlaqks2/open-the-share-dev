@@ -81,6 +81,7 @@ mockData.portfolioItems / pressReleases          ← 이미지 상대경로에 B
 - DB 쓰기는 RPC `content_ingest` 로만 하며 토큰(`CONTENT_INGEST_TOKEN`, GitHub Actions **Secret**)을 검사합니다. 토큰 원문은 DB 에 없고 sha256 해시만 `content_ingest_tokens` 에 있습니다.
 - `story` 는 og:description 을 90자 이내로 자동 요약 → 문장이 어색하면 운영자가 Table Editor 에서 다듬기
 - 자동 추론값(`org_type`, `category`, `partner`, `participants: 0`=미확인)은 **정확하지 않을 수 있음** → 주기적으로 검수 권장
+- **운영 방침: 현장스케치 카테고리 글은 전부 사이트에 노출합니다.** 재게시·비슷한 글이라도 에이전트가 임의로 숨기지 않습니다 (`is_published=false` 는 운영자가 요청한 경우에만).
 - 이미 있는 `log_no` 는 (숨긴 행 포함) 다시 추가하지 않으므로, 수동으로 고친 내용은 덮어써지지 않습니다.
 - 자동 수집을 막고 싶은 글: 봇이 추가한 뒤 `is_published = false`, 또는 블로그에서 카테고리를 현장스케치가 아닌 곳으로 옮기기
 
